@@ -54,11 +54,27 @@ public class AuthorDao implements AuthorDaoStrategy {
 
         return authors;
 }
+    public void deleteAuthorRecord(String primaryKey,int value) throws SQLException, ClassNotFoundException{
+         db.openConnection(DRIVER, URL, USER, PWD);
+         db.deleteRecord("author", primaryKey, value);
+         db.closeConnection();
+    }
 
 public static void main(String[] args) throws ClassNotFoundException, SQLException {
+//        testGetAuthorList();
+        testDeleteAuthorRecord();
+    }
+
+public static void testGetAuthorList() throws ClassNotFoundException, SQLException {
         AuthorDaoStrategy dao = new AuthorDao();
         List<Author> authors = dao.getAuthorList();
         System.out.println(authors);
+    }
+
+public static void testDeleteAuthorRecord() throws ClassNotFoundException, SQLException {
+        AuthorDaoStrategy dao = new AuthorDao();
+        dao.deleteAuthorRecord("author_id", 4);
+       
     }
 
 }

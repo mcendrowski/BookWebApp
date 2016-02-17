@@ -14,6 +14,7 @@ import java.util.List;
  */
 public class AuthorService {
     private AuthorDaoStrategy dao = new AuthorDao();
+//    private AuthorDaoStrategy dao = new MockAuthorDao();
     
     public List<Author> getAuthorList() throws ClassNotFoundException, SQLException
     {
@@ -25,4 +26,6 @@ public class AuthorService {
         List<Author> authors = srv.getAuthorList();
         System.out.println(authors);
     }
+    
+  
 }

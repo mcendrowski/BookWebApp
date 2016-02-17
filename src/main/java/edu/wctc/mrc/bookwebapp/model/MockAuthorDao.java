@@ -5,6 +5,7 @@
  */
 package edu.wctc.mrc.bookwebapp.model;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -63,16 +64,19 @@ public class MockAuthorDao implements AuthorDaoStrategy {
         listOfAuthors= new ArrayList<>();
         
         author = new Author();
+        author.setAuthorId(1);
         author.setAuthorName("Agatha Christie");
         author.setDateAdded(new Date());        
         listOfAuthors.add(author);
         
         author = new Author();
+        author.setAuthorId(2);
         author.setAuthorName("Michael Crichton");
         author.setDateAdded(new Date());        
         listOfAuthors.add(author);
         
         author = new Author();
+        author.setAuthorId(3);
         author.setAuthorName("Peter Drucker");
         author.setDateAdded(new Date());        
         listOfAuthors.add(author);
@@ -82,6 +86,11 @@ public class MockAuthorDao implements AuthorDaoStrategy {
 //                new Author(2,"Agatha Christie",LocalDate.now().minusDays(10)),
 //                new Author(3,"Agatha Christie",LocalDate.now().minusDays(10))
 //        )
+    }
+
+    @Override
+    public void deleteAuthorRecord(String primaryKey, int value) throws SQLException, ClassNotFoundException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

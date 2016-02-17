@@ -114,8 +114,8 @@ public class MySqlDBStrategy implements DBStrategy {
     }
 
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
-        testFindAllRecords();
-//        testInsertRecord();
+//        testFindAllRecords();
+        testInsertRecord();
 //        testDeleteRecord();
     }
 
