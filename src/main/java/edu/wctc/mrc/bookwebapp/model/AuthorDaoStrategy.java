@@ -17,4 +17,5 @@ public interface AuthorDaoStrategy {
     //    db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
    public abstract List<Author> getAuthorList() throws ClassNotFoundException, SQLException;
     public abstract void deleteAuthorRecord(String primaryKey,int value) throws SQLException, ClassNotFoundException;
+     public abstract int deleteAuthorById(Object id) throws ClassNotFoundException, SQLException;
 }

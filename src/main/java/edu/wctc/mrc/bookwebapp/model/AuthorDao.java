@@ -28,6 +28,16 @@ public class AuthorDao implements AuthorDaoStrategy {
     private final String URL = "jdbc:mysql://localhost:3306/book";
     private final String USER = "root";
     private final String PWD = "admin";
+    
+    
+    public int deleteAuthorById(Object id) throws ClassNotFoundException, SQLException{
+         db.openConnection(DRIVER, URL, USER, PWD);
+         
+         int result = db.deleteById("author","author_id",id);
+         
+         db.closeConnection();
+         return result;
+    }
 
 //    db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
     @Override

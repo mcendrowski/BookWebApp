@@ -16,6 +16,9 @@ public class AuthorService {
     private AuthorDaoStrategy dao = new AuthorDao();
 //    private AuthorDaoStrategy dao = new MockAuthorDao();
     
+    public int deleteAuthorbyId(Object id) throws ClassNotFoundException, SQLException{
+        return dao.deleteAuthorById(id);
+    }
     public List<Author> getAuthorList() throws ClassNotFoundException, SQLException
     {
         return dao.getAuthorList();
