@@ -91,11 +91,16 @@ public class MockAuthorDao implements AuthorDaoStrategy {
     }
 
     @Override
-    public void deleteAuthorRecord(String primaryKey, int value) throws SQLException, ClassNotFoundException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public int deleteAuthorRecord(String primaryKey, int value) throws SQLException, ClassNotFoundException {
+        return 1;
     }
 
-    public int updateAuthorById(List<String> colNames, List<Object> colValues, String primaryKey, Object primaryKeyValue) throws ClassNotFoundException, SQLException, Exception{
+    public int updateAuthorById(List<String> colNames, List<Object> colValues, String primaryKey, Object primaryKeyValue) throws ClassNotFoundException, SQLException, Exception {
+        return 1;
+    }
+
+    public int insertAuthorRecord(List<String> colNames, List<Object> colValues) throws SQLException, Exception {
+
         return 1;
     }
 }

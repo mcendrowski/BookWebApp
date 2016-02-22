@@ -28,18 +28,34 @@ public class AuthorService {
       return dao.updateAuthorById(colNames, colValues, primaryKey, primaryKeyValue);
     } 
     
+    public int addNewAuthor(List<String> colNames, List<Object> colValues) throws SQLException, Exception {
+      return dao.insertAuthorRecord(colNames, colValues);
+    } 
+    
     public static void main(String[] args) throws ClassNotFoundException, SQLException, Exception {
 //        AuthorService srv = new AuthorService();
 //        List<Author> authors = srv.getAuthorList();
 //        System.out.println(authors);
-        testModifyAuthorById();
+//        testModifyAuthorById();
+        testAddNewAuthor();
     }
     
-    public static void testModifyAuthorById() throws ClassNotFoundException, SQLException, Exception{
+    public static int testModifyAuthorById() throws ClassNotFoundException, SQLException, Exception{
+    int result;
     AuthorService srv = new AuthorService();
     List<String> colNames = Arrays.asList("author_name", "date_added");
     List<Object> colValues = Arrays.asList("Lucifer", "2001-02-11");
-    srv.modifyAuthorById(colNames, colValues, "author_id", 1);
+    result = srv.modifyAuthorById(colNames, colValues, "author_id", 1);
+    return result;
+}
+    
+       public static int testAddNewAuthor() throws ClassNotFoundException, SQLException, Exception{
+    int result;
+    AuthorService srv = new AuthorService();
+    List<String> colNames = Arrays.asList("author_name");
+    List<Object> colValues = Arrays.asList("Leonardo");
+    result = srv.addNewAuthor(colNames, colValues);
+    return result;
 }
     
   

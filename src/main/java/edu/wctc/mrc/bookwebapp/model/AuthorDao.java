@@ -73,16 +73,27 @@ public class AuthorDao implements AuthorDaoStrategy {
 
         return authors;
 }
-    public void deleteAuthorRecord(String primaryKey,int value) throws SQLException, ClassNotFoundException{
-         db.openConnection(DRIVER, URL, USER, PWD);
-         db.deleteRecord("author", primaryKey, value);
+    public int deleteAuthorRecord(String primaryKey,int value) throws SQLException, ClassNotFoundException{
+         int result;
+        db.openConnection(DRIVER, URL, USER, PWD);
+         result = db.deleteRecord("author", primaryKey, value);
          db.closeConnection();
+         return result;
+    }
+    
+        public int insertAuthorRecord(List<String> colNames, List<Object> colValues) throws SQLException, Exception {
+         int result;
+         db.openConnection(DRIVER, URL, USER, PWD);
+         result=db.insertRecord("author",colNames, colValues);
+         db.closeConnection();
+         return result;
     }
 
 public static void main(String[] args) throws ClassNotFoundException, SQLException, Exception {
 //        testGetAuthorList();
 //        testDeleteAuthorRecord();
-        testUpdateAuthorById();
+//        testUpdateAuthorById();
+        testInsertAuthor();
     }
 
 public static void testGetAuthorList() throws ClassNotFoundException, SQLException {
@@ -93,14 +104,24 @@ public static void testGetAuthorList() throws ClassNotFoundException, SQLExcepti
 
 public static void testDeleteAuthorRecord() throws ClassNotFoundException, SQLException {
         AuthorDaoStrategy dao = new AuthorDao();
-        dao.deleteAuthorRecord("author_id", 4);
-       
+        dao.deleteAuthorRecord("author_id", 4);       
     }
+
+
 public static void testUpdateAuthorById() throws ClassNotFoundException, SQLException, Exception{
     AuthorDaoStrategy dao = new AuthorDao();
     List<String> colNames = Arrays.asList("author_name", "date_added");
     List<Object> colValues = Arrays.asList("Mefisto", "2002-02-11");
     dao.updateAuthorById(colNames, colValues, "author_id", 1);
+}
+
+public static int testInsertAuthor() throws ClassNotFoundException, SQLException, Exception{
+    int result;
+    AuthorDaoStrategy dao = new AuthorDao();
+    List<String> colNames = Arrays.asList("author_name", "date_added");
+    List<Object> colValues = Arrays.asList("Germanicus", "2007-02-11");
+    result = dao.insertAuthorRecord(colNames, colValues);    
+    return result;
 }
 
 }
