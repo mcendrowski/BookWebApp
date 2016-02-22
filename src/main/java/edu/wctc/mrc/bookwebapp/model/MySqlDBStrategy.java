@@ -82,8 +82,6 @@ public class MySqlDBStrategy implements DBStrategy {
 //        
 //    }
     public int updateRecordById(String tableName, List<String> colNames, List<Object> colValues, String fieldName, Object value) throws SQLException, Exception {
-//    public int updateRecords(String tableName, List colDescriptors, List colValues,
-//							 String whereField, Object whereValue, boolean closeConnection)
 
         {
             PreparedStatement pstmt = null;
@@ -173,7 +171,28 @@ public class MySqlDBStrategy implements DBStrategy {
         return conn_loc.prepareStatement(finalSQL);
     }
 
-    public int insertRecord(String tableName) throws SQLException {
+    private PreparedStatement buildInsertStatement(Connection conn_loc, String tableName,
+            List colDescriptors) throws SQLException {
+//        public static String buildInsertStatement(String tableName,
+//            List colDescriptors) throws SQLException {
+        StringBuffer sqlFieldNames = new StringBuffer("INSERT INTO ");
+        (sqlFieldNames.append(tableName)).append(" (");
+        StringBuffer sqlFieldValues = new StringBuffer(") VALUES (");
+        final Iterator i = colDescriptors.iterator();
+        while (i.hasNext()) {
+            (sqlFieldNames.append((String) i.next())).append(", ");
+            sqlFieldValues.append("?, ");
+
+        }
+        sqlFieldNames = new StringBuffer((sqlFieldNames.toString()).substring(0, (sqlFieldNames.toString()).lastIndexOf(", ")));
+        sqlFieldValues = new StringBuffer((sqlFieldValues.toString()).substring(0, (sqlFieldValues.toString()).lastIndexOf(", ")));
+
+        final String finalSQL = ((sqlFieldNames.append(sqlFieldValues)).append(")")).toString();
+        return conn_loc.prepareStatement(finalSQL);
+//        return finalSQL;
+    }
+
+    public int insertRecord2(String tableName) throws SQLException {
         String sql;
         int recordsCount;
         sql = "INSERT INTO " + tableName + " (author_name,date_added) VALUES ('Bob','20111231')";
@@ -186,11 +205,55 @@ public class MySqlDBStrategy implements DBStrategy {
         return recordsCount;
     }
 
+  public int insertRecord(String tableName, List<String> colNames, List<Object> colValues) throws SQLException, Exception {
+
+        {
+            PreparedStatement pstmt = null;
+            int recsUpdated = 0;
+
+            // do this in an excpetion handler so that we can depend on the
+            // finally clause to close the connection
+            try {
+                pstmt = buildInsertStatement(conn, tableName, colNames);
+
+                final Iterator i = colValues.iterator();
+                int index = 1;
+                Object obj = null;
+
+                // set params for column values
+                while (i.hasNext()) {
+                    obj = i.next();
+                    pstmt.setObject(index++, obj);
+                }
+                
+
+                recsUpdated = pstmt.executeUpdate();
+
+            } catch (SQLException sqle) {
+                throw sqle;
+            } catch (Exception e) {
+                throw new SQLException(e.getMessage());
+            } finally {
+                try {
+                    pstmt.close();
+                    conn.close();
+
+                } catch (SQLException e) {
+                    throw e;
+                } // end try
+            } // end finally
+
+            return recsUpdated;
+        }
+    }
+
     public static void main(String[] args) throws ClassNotFoundException, SQLException, Exception {
 //        testFindAllRecords();
 //        testInsertRecord();
 //        testDeleteRecord();
-        testUpdateById();
+//        testUpdateById();
+//        testBuildInsertStatement();
+        testInsertRecord();
     }
 
     public static void testFindAllRecords() throws ClassNotFoundException, SQLException {
@@ -202,14 +265,14 @@ public class MySqlDBStrategy implements DBStrategy {
         System.out.println(rawData);
     }
 
-    public static void testInsertRecord() throws ClassNotFoundException, SQLException {
-        DBStrategy db = new MySqlDBStrategy();
-        db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
-        int recordsCount = db.insertRecord("author");
-
-        db.closeConnection();
-        System.out.println(recordsCount);
-    }
+//    public static void testInsertRecord() throws ClassNotFoundException, SQLException {
+//        DBStrategy db = new MySqlDBStrategy();
+//        db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
+//        int recordsCount = db.insertRecord("author");
+//
+//        db.closeConnection();
+//        System.out.println(recordsCount);
+//    }
 
     public static void testDeleteRecord() throws ClassNotFoundException, SQLException {
         DBStrategy db = new MySqlDBStrategy();
@@ -228,6 +291,27 @@ public class MySqlDBStrategy implements DBStrategy {
         String idString = "author_id";
         List<Object> listString = Arrays.asList("author_id");
         int result = db.updateRecordById("author", colNames, colValues, idString, 1);
+        db.closeConnection();
+
+    }
+
+//    public static void testBuildInsertStatement() throws SQLException {
+//        String tableName = "Author";
+//        List colDescriptors = Arrays.asList("author_name", "date_added", "abcde");
+//        String sql = buildInsertStatement(tableName, colDescriptors);
+//        System.out.println(sql);
+//
+//    }
+    
+      public static void testInsertRecord() throws SQLException, ClassNotFoundException, Exception {
+         DBStrategy db = new MySqlDBStrategy();
+        db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
+          
+          String tableName = "Author";
+        List colDescriptors = Arrays.asList("author_name", "date_added");
+        List<Object> colValues = Arrays.asList("Gabriel", "2012-02-11");
+        
+         int result = db.insertRecord(tableName, colDescriptors, colValues);
         db.closeConnection();
 
     }

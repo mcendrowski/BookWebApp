@@ -16,6 +16,7 @@ import java.util.List;
  * @author mcendrowski
  */
 public class MockAuthorDao implements AuthorDaoStrategy {
+
     private List<Author> listOfAuthors;
 
     public MockAuthorDao() {
@@ -38,10 +39,10 @@ public class MockAuthorDao implements AuthorDaoStrategy {
 //        listOfAuthors.add(author);
         initFakeDbResultSet();
     }
-    
-     public int deleteAuthorById(Object id) throws ClassNotFoundException, SQLException{
-         return 1;
-     }
+
+    public int deleteAuthorById(Object id) throws ClassNotFoundException, SQLException {
+        return 1;
+    }
 
     /**
      *
@@ -55,36 +56,33 @@ public class MockAuthorDao implements AuthorDaoStrategy {
     public void setListOfAuthors(List<Author> listOfAuthors) {
         this.listOfAuthors = listOfAuthors;
     }
-    
-   
-    
-    
+
 //    public static void main(String[] args) {
 //        MockAuthorDao as = new MockAuthorDao();
 //        System.out.println(as.getListOfAuthors().get(2).getAuthorName());
 //    }
-    private void initFakeDbResultSet(){
-         Author author=null;
-        listOfAuthors= new ArrayList<>();
-        
+    private void initFakeDbResultSet() {
+        Author author = null;
+        listOfAuthors = new ArrayList<>();
+
         author = new Author();
         author.setAuthorId(1);
         author.setAuthorName("Agatha Christie");
-        author.setDateAdded(new Date());        
+        author.setDateAdded(new Date());
         listOfAuthors.add(author);
-        
+
         author = new Author();
         author.setAuthorId(2);
         author.setAuthorName("Michael Crichton");
-        author.setDateAdded(new Date());        
+        author.setDateAdded(new Date());
         listOfAuthors.add(author);
-        
+
         author = new Author();
         author.setAuthorId(3);
         author.setAuthorName("Peter Drucker");
-        author.setDateAdded(new Date());        
+        author.setDateAdded(new Date());
         listOfAuthors.add(author);
-        
+
 //        authors = Arrays.asList(
 //                new Author(1,"Agatha Christie",LocalDate.now().minusDays(10)),
 //                new Author(2,"Agatha Christie",LocalDate.now().minusDays(10)),
@@ -96,5 +94,8 @@ public class MockAuthorDao implements AuthorDaoStrategy {
     public void deleteAuthorRecord(String primaryKey, int value) throws SQLException, ClassNotFoundException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
+    public int updateAuthorById(List<String> colNames, List<Object> colValues, String primaryKey, Object primaryKeyValue) throws ClassNotFoundException, SQLException, Exception{
+        return 1;
+    }
 }

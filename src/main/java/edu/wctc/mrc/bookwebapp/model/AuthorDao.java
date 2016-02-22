@@ -7,6 +7,7 @@ package edu.wctc.mrc.bookwebapp.model;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,14 @@ public class AuthorDao implements AuthorDaoStrategy {
          db.openConnection(DRIVER, URL, USER, PWD);
          
          int result = db.deleteById("author","author_id",id);
+         
+         db.closeConnection();
+         return result;
+    }
+    
+        public int updateAuthorById(List<String> colNames, List<Object> colValues, String primaryKey, Object primaryKeyValue) throws ClassNotFoundException, SQLException, Exception{
+         db.openConnection(DRIVER, URL, USER, PWD);
+         int result = db.updateRecordById("author", colNames, colValues, primaryKey, primaryKeyValue);          
          
          db.closeConnection();
          return result;
@@ -70,9 +79,10 @@ public class AuthorDao implements AuthorDaoStrategy {
          db.closeConnection();
     }
 
-public static void main(String[] args) throws ClassNotFoundException, SQLException {
+public static void main(String[] args) throws ClassNotFoundException, SQLException, Exception {
 //        testGetAuthorList();
-        testDeleteAuthorRecord();
+//        testDeleteAuthorRecord();
+        testUpdateAuthorById();
     }
 
 public static void testGetAuthorList() throws ClassNotFoundException, SQLException {
@@ -86,5 +96,11 @@ public static void testDeleteAuthorRecord() throws ClassNotFoundException, SQLEx
         dao.deleteAuthorRecord("author_id", 4);
        
     }
+public static void testUpdateAuthorById() throws ClassNotFoundException, SQLException, Exception{
+    AuthorDaoStrategy dao = new AuthorDao();
+    List<String> colNames = Arrays.asList("author_name", "date_added");
+    List<Object> colValues = Arrays.asList("Mefisto", "2002-02-11");
+    dao.updateAuthorById(colNames, colValues, "author_id", 1);
+}
 
 }
