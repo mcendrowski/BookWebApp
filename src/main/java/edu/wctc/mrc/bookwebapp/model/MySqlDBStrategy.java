@@ -5,6 +5,7 @@
  */
 package edu.wctc.mrc.bookwebapp.model;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -19,14 +20,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.enterprise.context.SessionScoped;
 
 /**
  *
  * @author MCENDROWSKI
  */
-public class MySqlDBStrategy implements DBStrategy {
+
+@SessionScoped
+public class MySqlDBStrategy implements DBStrategy, Serializable {
 
     private Connection conn;
+
+    public MySqlDBStrategy() {
+    }
+    
+    
 
     @Override
     public void openConnection(String driverClass, String url,
@@ -76,6 +85,114 @@ public class MySqlDBStrategy implements DBStrategy {
             records.add(record);
         }
         return records;
+    }
+    
+//        public Map<String, Object> findOneRecord(String tableName,String idField,int idValue) throws SQLException {
+//        String sql;
+//        
+//            sql = "SELECT * FROM " + tableName + " WHERE " + idField + " = "+idValue;
+//        
+//        Statement stmt = conn.createStatement();
+//        ResultSet rs = stmt.executeQuery(sql);
+//        ResultSetMetaData rsmd = rs.getMetaData();
+//        int columnCount = rsmd.getColumnCount();
+////        List<Map<String, Object>> records = new ArrayList<>();
+//        Map<String, Object> record=null;
+//         while (rs.next()) {
+//            record = new HashMap<>();
+//            for (int colNo = 1; colNo <= columnCount; colNo++) {
+//                Object colData = rs.getObject(colNo);
+//                String colName = rsmd.getColumnName(colNo);
+//                record.put(colName, colData);
+//
+//            }
+////            records.add(record);
+//        }
+//        
+//        return record;
+//    }
+    
+        public Map<String, Object> findRecordById(String tableName, String idField,Object idValue) throws SQLException {
+//        String sql;
+//        if (maxRecords < 1) {
+//            sql = "SELECT * FROM " + tableName;
+//
+//        } else {
+//            sql = "SELECT * FROM " + tableName + " LIMIT " + maxRecords;
+//        }
+
+            PreparedStatement pstmt = null;
+            
+
+            // do this in an excpetion handler so that we can depend on the
+            // finally clause to close the connection
+            try {
+                pstmt = buildSelectStatement(conn, tableName, idField);
+
+//                final Iterator i = colValues.iterator();
+                int index = 1;
+//                Object obj = null;
+
+                // set params for column values
+//                while (i.hasNext()) {
+//                    obj = i.next();
+//                    pstmt.setObject(index++, obj);
+//                }
+                // and finally set param for wehere value
+                pstmt.setObject(index, idValue);
+                
+                ResultSet rs = pstmt.executeQuery();
+
+//                recsUpdated = pstmt.executeUpdate();
+                ResultSetMetaData rsmd = rs.getMetaData();
+        int columnCount = rsmd.getColumnCount();
+//        Map<String, Object> record = new ArrayList<>();
+        Map<String, Object> record=null;
+        while (rs.next()) {
+            record = new HashMap<>();
+            for (int colNo = 1; colNo <= columnCount; colNo++) {
+                Object colData = rs.getObject(colNo);
+                String colName = rsmd.getColumnName(colNo);
+                record.put(colName, colData);
+
+            }
+//            records.add(record);
+        }
+        return record;
+
+            } catch (SQLException sqle) {
+                throw sqle;
+            } catch (Exception e) {
+                throw new SQLException(e.getMessage());
+            } finally {
+                try {
+                    pstmt.close();
+                    conn.close();
+
+                } catch (SQLException e) {
+                    throw e;
+                } // end try
+            } // end finally
+
+//            return recsUpdated;
+        
+//        sql = "SELECT * FROM " + tableName + " WHERE " + idField + "=?";
+//        Statement stmt = conn.createStatement();
+//        ResultSet rs = stmt.executeQuery(sql);
+//        ResultSetMetaData rsmd = rs.getMetaData();
+//        int columnCount = rsmd.getColumnCount();
+//        List<Map<String, Object>> records = new ArrayList<>();
+//        while (rs.next()) {
+//            Map<String, Object> record = new HashMap<>();
+//            for (int colNo = 1; colNo <= columnCount; colNo++) {
+//                Object colData = rs.getObject(colNo);
+//                String colName = rsmd.getColumnName(colNo);
+//                record.put(colName, colData);
+//
+//            }
+//            records.add(record);
+//        }
+//        return records;
     }
 
 //    public List<Map<String,Object>> findAllRecords(String sql){
@@ -170,7 +287,45 @@ public class MySqlDBStrategy implements DBStrategy {
         final String finalSQL = sql.toString();
         return conn_loc.prepareStatement(finalSQL);
     }
+    
+//      private PreparedStatement buildUpdateStatement(Connection conn_loc, String tableName,
+//            List colDescriptors, String whereField) throws SQLException {
+//        StringBuffer sql = new StringBuffer("UPDATE ");
+//        (sql.append(tableName)).append(" SET ");
+//        final Iterator i = colDescriptors.iterator();
+//        while (i.hasNext()) {
+//            (sql.append((String) i.next())).append(" = ?, ");
+//        }
+//        sql = new StringBuffer((sql.toString()).substring(0, (sql.toString()).lastIndexOf(", ")));
+//        ((sql.append(" WHERE ")).append(whereField)).append(" = ?");
+//        final String finalSQL = sql.toString();
+//        return conn_loc.prepareStatement(finalSQL);
+//    }
 
+    private PreparedStatement buildSelectStatement(Connection conn_loc, String tableName,
+            String idFieldName) throws SQLException {
+//    private static String buildSelectStatement(String tableName,
+//            String idFieldName) {
+//        public static String buildInsertStatement(String tableName,
+//            List colDescriptors) throws SQLException {
+        StringBuffer sql = new StringBuffer("SELECT * FROM ");
+        (sql.append(tableName)).append(" WHERE ");
+        (sql.append(idFieldName)).append(" = ?");
+//        StringBuffer sqlFieldValues = new StringBuffer(") VALUES (");
+//        final Iterator i = colDescriptors.iterator();
+//        while (i.hasNext()) {
+//            (sqlFieldNames.append((String) i.next())).append(", ");
+//            sqlFieldValues.append("?, ");
+//
+//        }
+//        sqlFieldNames = new StringBuffer((sqlFieldNames.toString()).substring(0, (sqlFieldNames.toString()).lastIndexOf(", ")));
+//        sqlFieldValues = new StringBuffer((sqlFieldValues.toString()).substring(0, (sqlFieldValues.toString()).lastIndexOf(", ")));
+
+        final String finalSQL = sql.toString();
+        return conn_loc.prepareStatement(finalSQL);
+//        return finalSQL;
+    }
+    
     private PreparedStatement buildInsertStatement(Connection conn_loc, String tableName,
             List colDescriptors) throws SQLException {
 //        public static String buildInsertStatement(String tableName,
@@ -253,13 +408,35 @@ public class MySqlDBStrategy implements DBStrategy {
 //        testDeleteRecord();
 //        testUpdateById();
 //        testBuildInsertStatement();
-        testInsertRecord();
+//        testInsertRecord();
+        testFindRecordById();
+//        testPrepareSelectStatement();
+//        testFindOneRecord();
     }
-
     public static void testFindAllRecords() throws ClassNotFoundException, SQLException {
         DBStrategy db = new MySqlDBStrategy();
         db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
         List<Map<String, Object>> rawData = db.findAllRecords("author", 0);
+
+        db.closeConnection();
+        System.out.println(rawData);
+    }
+    
+//     public static void testFindOneRecord() throws ClassNotFoundException, SQLException {
+//        DBStrategy db = new MySqlDBStrategy();
+//        db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
+//        Map<String, Object> rawData = db.findOneRecord("author","author_id",2);
+//
+//        db.closeConnection();
+//        System.out.println(rawData);
+//    }
+    
+      public static void testFindRecordById() throws ClassNotFoundException, SQLException {
+        DBStrategy db = new MySqlDBStrategy();
+        db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
+        Map<String, Object> rawData = db.findRecordById("author", "author_id", 2);
+        
+          
 
         db.closeConnection();
         System.out.println(rawData);
@@ -301,6 +478,15 @@ public class MySqlDBStrategy implements DBStrategy {
 //        String sql = buildInsertStatement(tableName, colDescriptors);
 //        System.out.println(sql);
 //
+//    }
+    
+//    public static void testPrepareSelectStatement(){
+//        String tableName = "author";
+//        String idField="author_id";
+//        
+//        
+//        String pstmt = buildSelectStatement(tableName, idField);
+//        System.out.println(pstmt);
 //    }
     
       public static void testInsertRecord() throws SQLException, ClassNotFoundException, Exception {

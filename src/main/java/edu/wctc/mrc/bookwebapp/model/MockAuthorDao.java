@@ -5,20 +5,30 @@
  */
 package edu.wctc.mrc.bookwebapp.model;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.Alternative;
 
 /**
  *
  * @author mcendrowski
  */
-public class MockAuthorDao implements AuthorDaoStrategy {
+//@Alternative
+@SessionScoped
+public class MockAuthorDao implements AuthorDaoStrategy, Serializable {
 
     private List<Author> listOfAuthors;
-
+    
+    
+    
+       
     public MockAuthorDao() {
 //        Author author=null;
 //        listOfAuthors= new ArrayList<>();
@@ -103,4 +113,29 @@ public class MockAuthorDao implements AuthorDaoStrategy {
 
         return 1;
     }
+
+    @Override
+    public DBStrategy getDb() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setDb(DBStrategy db) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public Author getAuthorById(Object idValue) throws ClassNotFoundException, SQLException {
+        
+       Author author = new Author();
+       return author;
+    }
+//    public Map<String, Object> findRecordById(String tableName, Object idValue) throws SQLException{
+//        
+//        Map<String, Object> map = new HashMap<>();
+//        
+//        map.put("anything", 1);
+//        
+//        return map;
+//        
+//    }
 }

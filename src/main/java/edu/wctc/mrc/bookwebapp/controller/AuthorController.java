@@ -9,6 +9,7 @@ import edu.wctc.mrc.bookwebapp.model.AuthorService;
 import edu.wctc.mrc.bookwebapp.model.MockAuthorDao;
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.inject.Inject;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,6 +25,10 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "AuthorController", urlPatterns = {"/AuthorController"})
 public class AuthorController extends HttpServlet {
 
+    
+@Inject
+private AuthorService authService;
+
 private static final String RESULT_PAGE = "/viewAllAuthors.jsp";
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,14 +39,17 @@ private static final String RESULT_PAGE = "/viewAllAuthors.jsp";
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+
+
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try  {
             /* TODO output your page here. You may use following sample code. */
 //         MockAuthorDao ns = new MockAuthorDao();
-         AuthorService ns = new AuthorService();
-         request.setAttribute("authorList", ns.getAuthorList());
+//         AuthorService ns = new AuthorService();
+         request.setAttribute("authorList", authService.getAuthorList());
         } catch (Exception e) {
             request.setAttribute("errorMsg", e.getMessage());
         }

@@ -5,17 +5,34 @@
  */
 package edu.wctc.mrc.bookwebapp.model;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 
 /**
  *
  * @author MCENDROWSKI
  */
-public class AuthorService {
+@SessionScoped
+public class AuthorService implements Serializable {
+//    @Inject
+//    private AuthorDaoStrategy dao; // = new AuthorDao();
     private AuthorDaoStrategy dao = new AuthorDao();
-//    private AuthorDaoStrategy dao = new MockAuthorDao();
+
+    public AuthorService() {
+    }
+
+    public AuthorDaoStrategy getDao() {
+        return dao;
+    }
+
+    public void setDao(AuthorDaoStrategy dao) {
+        this.dao = dao;
+    }
+    
     
     public int deleteAuthorbyId(Object id) throws ClassNotFoundException, SQLException{
         return dao.deleteAuthorById(id);

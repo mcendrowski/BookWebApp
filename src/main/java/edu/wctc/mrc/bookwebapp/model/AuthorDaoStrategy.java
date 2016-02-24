@@ -20,4 +20,10 @@ public interface AuthorDaoStrategy {
      public abstract int deleteAuthorById(Object id) throws ClassNotFoundException, SQLException;
      public abstract int updateAuthorById(List<String> colNames, List<Object> colValues, String primaryKey, Object primaryKeyValue) throws ClassNotFoundException, SQLException, Exception;
      public abstract int insertAuthorRecord(List<String> colNames, List<Object> colValues) throws SQLException, Exception;
+       public abstract DBStrategy getDb();  
+    
+
+    public abstract void setDb(DBStrategy db);
+    public abstract Author getAuthorById(Object idValue) throws ClassNotFoundException, SQLException;
+    
 }
