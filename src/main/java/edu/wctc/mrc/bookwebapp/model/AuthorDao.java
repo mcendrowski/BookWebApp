@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
@@ -20,7 +21,8 @@ import javax.inject.Inject;
  * @author mcendrowski
  */
 
-@SessionScoped
+//@SessionScoped
+@Dependent
 public class AuthorDao implements AuthorDaoStrategy, Serializable {
 //    customer terminology
     // opening and closing the connection
@@ -34,11 +36,56 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
     
     private DBStrategy db = new MySqlDBStrategy();
     
-    private final String DRIVER = "com.mysql.jdbc.Driver";
-    private final String URL = "jdbc:mysql://localhost:3306/book";
-    private final String USER = "root";
-    private final String PWD = "admin";
+//    private final String DRIVER = "com.mysql.jdbc.Driver";
+//    private final String URL = "jdbc:mysql://localhost:3306/book";
+//    private final String USER = "root";
+//    private final String PWD = "admin";
+    
+    private String driver;
+    private String url;
+    private String user;
+    private String pwd;
+    
+    public void initDao(String driver, String url, String user, String pwd){
+        setDriver(driver);
+        setUrl(url);
+        setUser(user);
+        setPwd(pwd);
+        
+    }
 
+    public String getDriver() {
+        return driver;
+    }
+
+    public void setDriver(String driver) {
+        this.driver = driver;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public String getPwd() {
+        return pwd;
+    }
+
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
+    }
+    
     public AuthorDao() {
     }
 
@@ -54,7 +101,7 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
     
     
     public int deleteAuthorById(Object id) throws ClassNotFoundException, SQLException{
-         db.openConnection(DRIVER, URL, USER, PWD);
+         db.openConnection(driver, url, user, pwd);
          
          int result = db.deleteById("author","author_id",id);
          
@@ -63,7 +110,7 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
     }
     
         public int updateAuthorById(List<String> colNames, List<Object> colValues, String primaryKey, Object primaryKeyValue) throws ClassNotFoundException, SQLException, Exception{
-         db.openConnection(DRIVER, URL, USER, PWD);
+         db.openConnection(driver, url, user, pwd);
          int result = db.updateRecordById("author", colNames, colValues, primaryKey, primaryKeyValue);          
          
          db.closeConnection();
@@ -73,7 +120,7 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
 //    db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
     @Override
     public List<Author> getAuthorList() throws ClassNotFoundException, SQLException {
-        db.openConnection(DRIVER, URL, USER, PWD);
+        db.openConnection(driver, url, user, pwd);
 
         List<Map<String, Object>> rawData = db.findAllRecords("author", 0);
 
@@ -97,7 +144,7 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
 }
     
         public Author getAuthorById(Object idValue) throws ClassNotFoundException, SQLException {
-        db.openConnection(DRIVER, URL, USER, PWD);
+        db.openConnection(driver, url, user, pwd);
 
         Map<String, Object> rawData = db.findRecordById("author","author_id", idValue);
 
@@ -121,7 +168,7 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
 }
     public int deleteAuthorRecord(String primaryKey,int value) throws SQLException, ClassNotFoundException{
          int result;
-        db.openConnection(DRIVER, URL, USER, PWD);
+        db.openConnection(driver, url, user, pwd);
          result = db.deleteRecord("author", primaryKey, value);
          db.closeConnection();
          return result;
@@ -129,7 +176,7 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
     
         public int insertAuthorRecord(List<String> colNames, List<Object> colValues) throws SQLException, Exception {
          int result;
-         db.openConnection(DRIVER, URL, USER, PWD);
+         db.openConnection(driver, url, user, pwd);
          result=db.insertRecord("author",colNames, colValues);
          db.closeConnection();
          return result;

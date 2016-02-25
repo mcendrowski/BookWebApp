@@ -26,4 +26,22 @@ public interface AuthorDaoStrategy {
     public abstract void setDb(DBStrategy db);
     public abstract Author getAuthorById(Object idValue) throws ClassNotFoundException, SQLException;
     
+    public abstract void initDao(String driver, String url, String user, String pwd);
+    
+    public abstract String getDriver();
+
+    public abstract void setDriver(String driver);
+
+    public abstract String getUrl(); 
+
+    public abstract void setUrl(String url); 
+
+    public abstract String getUser();
+
+    public abstract void setUser(String user);
+
+    public abstract String getPwd();
+
+    public abstract void setPwd(String pwd);
+    
 }

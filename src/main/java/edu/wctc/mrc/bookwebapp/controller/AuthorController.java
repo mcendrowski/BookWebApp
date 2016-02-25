@@ -25,6 +25,12 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "AuthorController", urlPatterns = {"/AuthorController"})
 public class AuthorController extends HttpServlet {
 
+ // db config
+ private String driverClass;
+ private String url;
+ private String userName;
+ private String password;
+    
     
 @Inject
 private AuthorService authService;
@@ -40,11 +46,23 @@ private static final String RESULT_PAGE = "/viewAllAuthors.jsp";
      * @throws IOException if an I/O error occurs
      */
 
+@Override
+public void init() throws ServletException{
+    driverClass = getServletContext().getInitParameter("db.driver.class");
+    url = getServletContext().getInitParameter("db.url");
+    userName = getServletContext().getInitParameter("db.username");
+    password = getServletContext().getInitParameter("db.password");
+    
+}
+
 
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        
+        configDbConnection();
+        
         try  {
             /* TODO output your page here. You may use following sample code. */
 //         MockAuthorDao ns = new MockAuthorDao();
@@ -56,6 +74,10 @@ private static final String RESULT_PAGE = "/viewAllAuthors.jsp";
          RequestDispatcher view
                 = request.getRequestDispatcher(RESULT_PAGE);
         view.forward(request, response);
+    }
+    
+    private void configDbConnection(){
+        authService.getDao().initDao(driverClass, url, userName, password);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

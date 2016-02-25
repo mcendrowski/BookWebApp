@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.context.SessionScoped;
 
 /**
@@ -27,7 +28,8 @@ import javax.enterprise.context.SessionScoped;
  * @author MCENDROWSKI
  */
 
-@SessionScoped
+//@SessionScoped
+@Dependent // takes dependency from the parent
 public class MySqlDBStrategy implements DBStrategy, Serializable {
 
     private Connection conn;
