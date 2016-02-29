@@ -54,19 +54,23 @@
                                 <td class="text-left">${item.dateAdded}</td>
                                 <td class="col-md-2 text-center">
 
-                                    <form method="POST" action="AuthorController?action=addUpdate">        
-                                        <input type="submit" value="update" name="${item.authorId}"/> 
-                                        
+                                    <form method="POST" action="AuthorController">        
+                                        <input type="submit" value="update" name="submit"/> 
+                                        <input type="hidden" name ="execute" value ="update"/>
+                                        <input type="hidden" name="author_id" value=${item.authorId} />
                                        
-
+                                    </form>
 
                                 </td>
+                                
                                 <td class="col-md-2 text-center">
 
-                                    <form method="POST" action="AuthorController?action=addDelete">        
-                                        <input type="submit" value="delete" name="${item.authorId}" /> 
+                                    <form method="POST" action="AuthorController">        
+                                        <input type="submit" value="delete" name="submit" /> 
+                                        <input type="hidden" name="execute" value="delete"/>
+                                        <input type="hidden" name="author_id" value=${item.authorId} />
                                         
-                                      
+                                    </form>
 
 
                                 </td>
@@ -81,7 +85,7 @@
                             <td class="col-md-3 text-center"></td>
                             <td class="col-md-2 text-center">
 
-                                <form method="POST" action="AuthorController?action=addInsert">        
+                                <form method="POST" action="AuthorController">        
                                     <input type="submit" value="Insert" name="submit" />  
 
 

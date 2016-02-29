@@ -245,10 +245,28 @@ public class MySqlDBStrategy implements DBStrategy, Serializable {
 
     public int deleteById(String tableName, String pkColName, Object value) throws SQLException {
         String sql = "delete from " + tableName + " where "
-                + pkColName + " ?";
-        PreparedStatement psmt = conn.prepareStatement(sql);
-        psmt.setObject(1, value);
-        int result = psmt.executeUpdate();
+                + pkColName + " = ?";
+       
+        PreparedStatement stmt = null;
+        int result;
+        
+        try {
+            stmt = conn.prepareStatement(sql);
+            stmt.setObject(1, value);
+            // recordsDeleted count
+            result= stmt.executeUpdate();
+            
+        } catch (SQLException e) {
+            throw new SQLException(e.getMessage(),e.getCause());
+        } finally {
+            try {
+                stmt.close();
+                conn.close();
+            } catch (SQLException e) {
+                throw new SQLException(e.getMessage(),e.getCause());
+            } // end try
+        }       
+        
         return result;
     }
 
@@ -408,10 +426,11 @@ public class MySqlDBStrategy implements DBStrategy, Serializable {
 //        testFindAllRecords();
 //        testInsertRecord();
 //        testDeleteRecord();
+        testDeleteById();
 //        testUpdateById();
 //        testBuildInsertStatement();
 //        testInsertRecord();
-        testFindRecordById();
+//        testFindRecordById();
 //        testPrepareSelectStatement();
 //        testFindOneRecord();
     }
@@ -456,7 +475,7 @@ public class MySqlDBStrategy implements DBStrategy, Serializable {
     public static void testDeleteRecord() throws ClassNotFoundException, SQLException {
         DBStrategy db = new MySqlDBStrategy();
         db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
-        int recordsCount = db.deleteRecord("author", "author_id", 4);
+        int recordsCount = db.deleteRecord("author", "author_id", 6);
         db.closeConnection();
         System.out.println(recordsCount);
     }
@@ -504,16 +523,16 @@ public class MySqlDBStrategy implements DBStrategy, Serializable {
 
     }
 
-//    public static void testDeleteById()throws ClassNotFoundException, SQLException{
-//         DBStrategy db = new MySqlDBStrategy();
-//        db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
-//        List<Map<String,Object>> rawData = 
-//                db.findAllRecords("author", 0);
-//        System.out.println(rawData);
-//        
-//        int result
-//        
-//    }
+    public static void testDeleteById()throws ClassNotFoundException, SQLException{
+         DBStrategy db = new MySqlDBStrategy();
+        db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
+//        Object object = new Integer(3);
+         int result = db.deleteById("author","author_id", 3);
+        
+        
+        
+        
+    }
 //    public static void testCreateWhereClause(){
 //        Map<String,String> map = new HashMap<>();        
 //        

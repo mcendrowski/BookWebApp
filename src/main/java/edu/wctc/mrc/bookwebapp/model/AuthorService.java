@@ -34,19 +34,19 @@ public class AuthorService implements Serializable {
     }
     
     
-    public int deleteAuthorbyId(Object id) throws ClassNotFoundException, SQLException{
+    public int deleteAuthorById(Integer id) throws ClassNotFoundException, SQLException{
         return dao.deleteAuthorById(id);
     }
     public List<Author> getAuthorList() throws ClassNotFoundException, SQLException
     {
         return dao.getAuthorList();
     }
-    public int modifyAuthorById(List<String> colNames, List<Object> colValues, String primaryKey, Object primaryKeyValue) throws ClassNotFoundException, SQLException, Exception{
-      return dao.updateAuthorById(colNames, colValues, primaryKey, primaryKeyValue);
+    public int modifyAuthorById(String authorName, Integer authorId) throws ClassNotFoundException, SQLException, Exception{
+      return dao.updateAuthorById(authorName,authorId);
     } 
     
-    public int addNewAuthor(List<String> colNames, List<Object> colValues) throws SQLException, Exception {
-      return dao.insertAuthorRecord(colNames, colValues);
+    public int addNewAuthor(String authorName) throws SQLException, Exception {
+      return dao.insertAuthorRecord(authorName);
     } 
     
     public static void main(String[] args) throws ClassNotFoundException, SQLException, Exception {
@@ -54,26 +54,33 @@ public class AuthorService implements Serializable {
 //        List<Author> authors = srv.getAuthorList();
 //        System.out.println(authors);
 //        testModifyAuthorById();
-        testAddNewAuthor();
+//        testAddNewAuthor();
+        testDeleteAuthorById();
     }
     
     public static int testModifyAuthorById() throws ClassNotFoundException, SQLException, Exception{
     int result;
     AuthorService srv = new AuthorService();
-    List<String> colNames = Arrays.asList("author_name", "date_added");
-    List<Object> colValues = Arrays.asList("Lucifer", "2001-02-11");
-    result = srv.modifyAuthorById(colNames, colValues, "author_id", 1);
+//    List<String> colNames = Arrays.asList("author_name", "date_added");
+//    List<Object> colValues = Arrays.asList("Lucifer", "2001-02-11");
+    result = srv.modifyAuthorById("Spiderman", 3);
     return result;
 }
     
        public static int testAddNewAuthor() throws ClassNotFoundException, SQLException, Exception{
     int result;
     AuthorService srv = new AuthorService();
-    List<String> colNames = Arrays.asList("author_name");
-    List<Object> colValues = Arrays.asList("Leonardo");
-    result = srv.addNewAuthor(colNames, colValues);
+//    List<String> colNames = Arrays.asList("author_name");
+//    List<Object> colValues = Arrays.asList("Leonardo");
+    result = srv.addNewAuthor("Superman");
     return result;
 }
+       public static int testDeleteAuthorById() throws ClassNotFoundException, SQLException{
+           int result;
+           AuthorService srv = new AuthorService();
+           result = srv.deleteAuthorById(5);
+           return result;
+       }
     
   
 }

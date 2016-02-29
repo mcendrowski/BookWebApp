@@ -104,6 +104,8 @@ public void init() throws ServletException{
          
          String execute = request.getParameter("execute");
          
+         
+         
          if(execute.equalsIgnoreCase("set read mode")){
              this.modeValue="READ";
              
@@ -115,9 +117,25 @@ public void init() throws ServletException{
              else{
                  this.modeValue="READ";
              }
-         }         
+         } 
          
-         request.setAttribute("modeValue", this.modeValue);
+         if(execute.equalsIgnoreCase("update")){
+             authService.modifyAuthorById("John Brown",4);
+             this.modeValue="EDIT";
+         }
+         
+          if(execute.equalsIgnoreCase("delete")){
+             authService.deleteAuthorById(6);
+             this.modeValue="EDIT";
+         }
+         
+         
+         String author_id =request.getParameter("author_id");
+         String submit =request.getParameter("submit");
+         
+         request.setAttribute("modeValue", this.modeValue);         
+         request.setAttribute("author_id",author_id);
+         request.setAttribute("submit",submit);
         } catch (Exception e) {
             request.setAttribute("errorMsg", e.getMessage());
         }

@@ -100,21 +100,32 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
     
     
     
-    public int deleteAuthorById(Object id) throws ClassNotFoundException, SQLException{
-         db.openConnection(driver, url, user, pwd);
+    public int deleteAuthorById(Integer id) throws ClassNotFoundException, SQLException{
+         System.out.println(driver);
+         System.out.println(url);
+         System.out.println(user);
+         System.out.println(pwd);
+        db.openConnection(driver, url, user, pwd);
          
          int result = db.deleteById("author","author_id",id);
          
          db.closeConnection();
          return result;
+         
+         
+         
     }
     
-        public int updateAuthorById(List<String> colNames, List<Object> colValues, String primaryKey, Object primaryKeyValue) throws ClassNotFoundException, SQLException, Exception{
+        public int updateAuthorById(String authorName, Integer authorId) throws ClassNotFoundException, SQLException, Exception{
          db.openConnection(driver, url, user, pwd);
-         int result = db.updateRecordById("author", colNames, colValues, primaryKey, primaryKeyValue);          
+         
+         
+            int recordsUpdated = db.updateRecordById("author", Arrays.asList("author_name"), 
+                                       Arrays.asList(authorName),
+                                       "author_id", authorId);         
          
          db.closeConnection();
-         return result;
+         return recordsUpdated;
     }
 
 //    db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
@@ -174,20 +185,25 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
          return result;
     }
     
-        public int insertAuthorRecord(List<String> colNames, List<Object> colValues) throws SQLException, Exception {
+        public int insertAuthorRecord(String authorName) throws SQLException, Exception {
          int result;
          db.openConnection(driver, url, user, pwd);
-         result=db.insertRecord("author",colNames, colValues);
+         
+        
+            result = db.insertRecord("author", Arrays.asList("author_name","date_added"), 
+                                      Arrays.asList(authorName,new Date()));         
+         
+         
          db.closeConnection();
          return result;
     }
 
 public static void main(String[] args) throws ClassNotFoundException, SQLException, Exception {
 //        testGetAuthorList();
-//        testDeleteAuthorRecord();
+        testDeleteAuthorById();
 //        testUpdateAuthorById();
 //        testInsertAuthor();
-        testGetAuthorById();
+//        testGetAuthorById();
     }
 
 public static void testGetAuthorList() throws ClassNotFoundException, SQLException {
@@ -202,25 +218,25 @@ public static void testGetAuthorById() throws ClassNotFoundException, SQLExcepti
         System.out.println(author);
     }
 
-public static void testDeleteAuthorRecord() throws ClassNotFoundException, SQLException {
+public static void testDeleteAuthorById() throws ClassNotFoundException, SQLException {
         AuthorDaoStrategy dao = new AuthorDao();
-        dao.deleteAuthorRecord("author_id", 4);       
+        dao.deleteAuthorById(6);       
     }
 
 
 public static void testUpdateAuthorById() throws ClassNotFoundException, SQLException, Exception{
     AuthorDaoStrategy dao = new AuthorDao();
-    List<String> colNames = Arrays.asList("author_name", "date_added");
-    List<Object> colValues = Arrays.asList("Mefisto", "2002-02-11");
-    dao.updateAuthorById(colNames, colValues, "author_id", 1);
+//    List<String> colNames = Arrays.asList("author_name", "date_added");
+//    List<Object> colValues = Arrays.asList("Mefisto", "2002-02-11");
+    dao.updateAuthorById("Warewolf", 1);
 }
 
 public static int testInsertAuthor() throws ClassNotFoundException, SQLException, Exception{
     int result;
     AuthorDaoStrategy dao = new AuthorDao();
-    List<String> colNames = Arrays.asList("author_name", "date_added");
-    List<Object> colValues = Arrays.asList("Germanicus", "2007-02-11");
-    result = dao.insertAuthorRecord(colNames, colValues);    
+//    List<String> colNames = Arrays.asList("author_name", "date_added");
+//    List<Object> colValues = Arrays.asList("Germanicus", "2007-02-11");
+    result = dao.insertAuthorRecord( "Frankenstein");    
     return result;
 }
 
