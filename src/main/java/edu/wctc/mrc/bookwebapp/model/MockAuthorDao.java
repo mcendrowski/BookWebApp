@@ -21,7 +21,7 @@ import javax.enterprise.inject.Alternative;
  *
  * @author mcendrowski
  */
-//@Alternative
+@Alternative
 //@SessionScoped
 @Dependent
 public class MockAuthorDao implements AuthorDaoStrategy, Serializable {

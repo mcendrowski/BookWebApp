@@ -30,12 +30,15 @@ public class AuthorController extends HttpServlet {
  private String url;
  private String userName;
  private String password;
+ 
+ private String modeValue;
     
     
 @Inject
 private AuthorService authService;
 
 private static final String RESULT_PAGE = "/viewAllAuthors.jsp";
+private static final String ACTION_PARAM="action";
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -55,7 +58,16 @@ public void init() throws ServletException{
     
 }
 
+  private void updatemodeValue(HttpServletRequest request) {
+        String modeValue = request.getParameter("modeValue");
+        this.modeValue = modeValue;      
 
+    }
+  
+   private void updateRequest(HttpServletRequest request) {
+        request.setAttribute("modeValue", this.modeValue);
+   }
+    
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -63,11 +75,49 @@ public void init() throws ServletException{
         
         configDbConnection();
         
+        String destination = RESULT_PAGE;
+        String action = request.getParameter(ACTION_PARAM);
+//        modeValue="READ";
+        
         try  {
             /* TODO output your page here. You may use following sample code. */
 //         MockAuthorDao ns = new MockAuthorDao();
 //         AuthorService ns = new AuthorService();
+    
+//        if(action.equalsIgnoreCase("addEdit")){
+//           if (modeValue.equalsIgnoreCase("EDIT")){
+//               modeValue="READ";
+//           }
+//           else{
+//               modeValue="EDIT";
+//           }
+////            request.setAttribute("modeValue", "ALLOW EDIT");
+//            updateRequest(request);
+//        }
+//        else {
+//            modeValue="READ";
+//            updateRequest(request);
+//        }
+
+
          request.setAttribute("authorList", authService.getAuthorList());
+         
+         String execute = request.getParameter("execute");
+         
+         if(execute.equalsIgnoreCase("set read mode")){
+             this.modeValue="READ";
+             
+         }
+         if(execute.equalsIgnoreCase("switch mode")){
+             if (this.modeValue.equalsIgnoreCase("READ")){
+                 this.modeValue="EDIT";
+             }
+             else{
+                 this.modeValue="READ";
+             }
+         }         
+         
+         request.setAttribute("modeValue", this.modeValue);
         } catch (Exception e) {
             request.setAttribute("errorMsg", e.getMessage());
         }

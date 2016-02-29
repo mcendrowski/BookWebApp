@@ -1,4 +1,4 @@
-    <%-- 
+<%-- 
     Document   : index
     Created on : Feb 7, 2016, 9:35:44 PM
     Author     : mcendrowski
@@ -18,8 +18,6 @@
         <title>JSP Page</title>
     </head>
     <body>
-        
-       
        
         <p></p>
          <form id="startingForm" name="startingForm" method="POST" action="AuthorController" >
@@ -27,7 +25,6 @@
                 <div class="row">
                     <div class="col-md-4 col-md-offset-4">
                         <input type="submit" class="btn btn-info btn-large" name="submit" value="Open View All Authors page"/>
-                        <input type="hidden" name="execute" value="set read mode"/>    
                     </div>
                 </div>
             </div>
