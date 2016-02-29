@@ -25,12 +25,12 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6 col-md-offset-4">
-                     <form method="POST" action="AuthorController">        
-                        
-                         
-                        <input type="submit" value=${modeValue} name="modeValue" />
-                        <input type="hidden" name="execute" value="switch mode"/>
-                        
+                    <form method="POST" action="AuthorController">        
+
+
+                        <input type="submit" value=${modeValue} name="modeValue">
+                        <input type="hidden" name="execute" value="switch mode">
+
                     </form> 
                 </div>
             </div>
@@ -50,55 +50,63 @@
 
                             <tr>
                                 <td class="text-right">${item.authorId}</td>
-                                <td class="text-left">${item.authorName}</td>
-                                <td class="text-left">${item.dateAdded}</td>
-                                <td class="col-md-2 text-center">
+                                <%-- <td class="text-left">${item.authorName}</td> --%>
 
-                                    <form method="POST" action="AuthorController">        
-                                        <input type="submit" value="update" name="submit"/> 
-                                        <input type="hidden" name ="execute" value ="update"/>
-                                        <input type="hidden" name="author_id" value=${item.authorId} />
-                                       
-                                    </form>
-
-                                </td>
-                                
-                                <td class="col-md-2 text-center">
-
-                                    <form method="POST" action="AuthorController">        
-                                        <input type="submit" value="delete" name="submit" /> 
-                                        <input type="hidden" name="execute" value="delete"/>
-                                        <input type="hidden" name="author_id" value=${item.authorId} />
+                                <td class="col-md-4 text-center">
+                                    
+                                        <input type="text" name="update_value" value="${item.authorName}" form="update_form">
                                         
-                                    </form>
-
-
+                                    
                                 </td>
+                            
+                            <td class="text-left">${item.dateAdded}</td>
+                            <td class="col-md-2 text-center">
+                                
+                                <form method="POST" action="AuthorController" id="update_form"> 
+                                <input type="submit" value="update" name="submit">
+                                <input type="hidden" name="author_id" value=${item.authorId}>
+                                <input type="hidden" name ="execute" value ="update">
+                                <input type="hidden" name ="update_test" value="test of update">
+                                </form>
+                            </td>
+                            
 
-
-                            </tr>
-                        </c:forEach>
-                        <tr>
-
-                            <td class="col-md-1 text-center"></td>    
-                            <td class="col-md-4 text-center"><input type="text2" /></td>
-                            <td class="col-md-3 text-center"></td>
                             <td class="col-md-2 text-center">
 
                                 <form method="POST" action="AuthorController">        
-                                    <input type="submit" value="Insert" name="submit" />  
+                                    <input type="submit" value="delete" name="submit"> 
+                                    <input type="hidden" name="execute" value="delete">
+                                    <input type="hidden" name="author_id" value=${item.authorId}>
+
+                                </form>
 
 
                             </td>
 
-                        </tr>
 
+                            </tr>
+                        </c:forEach>
+                        <form method="POST" action="AuthorController"> 
+                            <tr>
+
+                                <td class="col-md-1 text-center"></td>    
+                                <td class="col-md-4 text-center"><input type="text" name="insert_value" value=""></td>
+                                <td class="col-md-3 text-center"></td>
+                                <td class="col-md-2 text-center">
+
+
+                                    <input type="submit" value="Insert" name="submit"> 
+                                    <input type="hidden" name="execute" value="insert">
+                                </td>
+
+                            </tr>
+                        </form>
 
                     </table>
                 </div>
             </div>
         </div>
-                  <h3> Parameter names :
+        <h3> Parameter names :
 
             <%
                 for (Enumeration<String> e = request.getParameterNames(); e.hasMoreElements();) {
@@ -125,7 +133,7 @@
 
 
             %>
- 
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     </body>
 </html>

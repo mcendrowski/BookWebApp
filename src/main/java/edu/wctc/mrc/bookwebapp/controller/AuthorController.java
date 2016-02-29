@@ -39,6 +39,11 @@ private AuthorService authService;
 
 private static final String RESULT_PAGE = "/viewAllAuthors.jsp";
 private static final String ACTION_PARAM="action";
+private static final String EXECUTE_UPDATE="update";
+private static final String EXECUTE_INSERT="insert";
+private static final String EXECUTE_DELETE="delete";
+private static final String EXECUTE_SWITCH_MODE="switch mode";
+private static final String EXECUTE_SET_READ_MODE="set read mode";
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -77,6 +82,7 @@ public void init() throws ServletException{
         
         String destination = RESULT_PAGE;
         String action = request.getParameter(ACTION_PARAM);
+        String insertValue="";
 //        modeValue="READ";
         
         try  {
@@ -120,22 +126,36 @@ public void init() throws ServletException{
          } 
          
          if(execute.equalsIgnoreCase("update")){
-             authService.modifyAuthorById("John Brown",4);
+             
+             int author_id = Integer.parseInt(request.getParameter("author_id"));
+//             String authorName = request.getParameter("update_value");
+             String authorName = request.getParameter("update_test");
+             authService.modifyAuthorById(authorName,author_id);
              this.modeValue="EDIT";
          }
          
           if(execute.equalsIgnoreCase("delete")){
-             authService.deleteAuthorById(6);
+             int author_id = Integer.parseInt(request.getParameter("author_id"));
+              authService.deleteAuthorById(author_id);
              this.modeValue="EDIT";
          }
+          if(execute.equalsIgnoreCase("insert")){
+              insertValue = request.getParameter("insert_value");
+              authService.addNewAuthor(insertValue);
+              this.modeValue="EDIT";    
+          }
          
          
-         String author_id =request.getParameter("author_id");
-         String submit =request.getParameter("submit");
+//         String author_id =request.getParameter("author_id");
+//         String submit =request.getParameter("submit");
          
          request.setAttribute("modeValue", this.modeValue);         
-         request.setAttribute("author_id",author_id);
-         request.setAttribute("submit",submit);
+//         request.setAttribute("author_id",author_id);
+//         request.setAttribute("submit",submit);
+//         request.setAttribute("insert_value",insertValue);
+//         request.setAttribute("update_value",insertValue);
+
+        request.setAttribute("authorList", authService.getAuthorList());
         } catch (Exception e) {
             request.setAttribute("errorMsg", e.getMessage());
         }
