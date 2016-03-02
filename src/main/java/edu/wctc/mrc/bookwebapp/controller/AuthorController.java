@@ -11,11 +11,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import javax.inject.Inject;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 
 /**
@@ -79,6 +81,13 @@ public void init() throws ServletException{
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
+        
+         HttpSession session = request.getSession();
+        ServletContext ctx = request.getServletContext();
+        
+       
+        String fontColor = request.getParameter("fontColor");
+        
         configDbConnection();
         
         String destinationPage = RESULT_PAGE;
@@ -111,6 +120,17 @@ public void init() throws ServletException{
          
          String execute = request.getParameter("execute");
          
+           if(execute.equalsIgnoreCase("blue color")){
+             this.modeValue="READ";
+             
+              String color = request.getParameter("color");
+            // Session scope is per user
+            session.setAttribute("color", color);
+             
+             
+             request.setAttribute("authorList", authService.getAuthorList());
+             
+         }
          
          
          if(execute.equalsIgnoreCase("set read mode")){

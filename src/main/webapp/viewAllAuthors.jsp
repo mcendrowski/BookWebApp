@@ -19,6 +19,11 @@
         <title>JSP Page</title>
     </head>
     <body>
+        
+        <%--
+            <jsp:useBean id="user" class="user.UserData" scope="session"/>
+<jsp:setProperty name="user" property="*"/>
+--%>
         <p></p>
         <p></p>
         <p></p>
@@ -32,6 +37,13 @@
                         <input type="hidden" name="execute" value="switch mode">
 
                     </form> 
+                    <form method="POST" action="AuthorController">        
+
+
+                        <input type="submit" value="blue" name="color">
+                        <input type="hidden" name="execute" value="blue color">
+
+                    </form>
                 </div>
             </div>
             <p></p>
