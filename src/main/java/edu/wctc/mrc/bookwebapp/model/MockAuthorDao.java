@@ -126,7 +126,7 @@ public class MockAuthorDao implements AuthorDaoStrategy, Serializable {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    public Author getAuthorById(Object idValue) throws ClassNotFoundException, SQLException {
+    public Author getAuthorById(Integer idValue) throws ClassNotFoundException, SQLException {
         
        Author author = new Author();
        return author;
@@ -198,6 +198,11 @@ public class MockAuthorDao implements AuthorDaoStrategy, Serializable {
 
     @Override
     public int deleteAuthorById(Integer id) throws ClassNotFoundException, SQLException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Map<String, Object> getAuthorId(Integer idValue) throws ClassNotFoundException, SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

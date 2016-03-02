@@ -33,7 +33,9 @@ public class AuthorService implements Serializable {
         this.dao = dao;
     }
     
-    
+    public Author getAuthorById(Integer idValue) throws ClassNotFoundException, SQLException{
+        return dao.getAuthorById(idValue);
+    }
     public int deleteAuthorById(Integer id) throws ClassNotFoundException, SQLException{
         return dao.deleteAuthorById(id);
     }
@@ -53,9 +55,10 @@ public class AuthorService implements Serializable {
 //        AuthorService srv = new AuthorService();
 //        List<Author> authors = srv.getAuthorList();
 //        System.out.println(authors);
-//        testModifyAuthorById();
+        testModifyAuthorById();
 //        testAddNewAuthor();
-        testDeleteAuthorById();
+//        testDeleteAuthorById();
+//        testGetAuthorById();
     }
     
     public static int testModifyAuthorById() throws ClassNotFoundException, SQLException, Exception{
@@ -63,7 +66,7 @@ public class AuthorService implements Serializable {
     AuthorService srv = new AuthorService();
 //    List<String> colNames = Arrays.asList("author_name", "date_added");
 //    List<Object> colValues = Arrays.asList("Lucifer", "2001-02-11");
-    result = srv.modifyAuthorById("Spiderman", 3);
+    result = srv.modifyAuthorById("Spiderman", 1);
     return result;
 }
     
@@ -81,6 +84,15 @@ public class AuthorService implements Serializable {
            result = srv.deleteAuthorById(5);
            return result;
        }
+       
+        public static void testGetAuthorById() throws ClassNotFoundException, SQLException{
+//           int result;
+           AuthorService srv = new AuthorService();
+            System.out.println(srv.getAuthorById(1));
+//           return result;
+       }
+       
+       
     
   
 }

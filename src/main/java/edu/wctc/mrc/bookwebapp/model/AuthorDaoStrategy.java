@@ -7,6 +7,7 @@ package edu.wctc.mrc.bookwebapp.model;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -24,7 +25,7 @@ public interface AuthorDaoStrategy {
     
 
     public abstract void setDb(DBStrategy db);
-    public abstract Author getAuthorById(Object idValue) throws ClassNotFoundException, SQLException;
+    public abstract Author getAuthorById(Integer idValue) throws ClassNotFoundException, SQLException;
     
     public abstract void initDao(String driver, String url, String user, String pwd);
     
@@ -43,5 +44,7 @@ public interface AuthorDaoStrategy {
     public abstract String getPwd();
 
     public abstract void setPwd(String pwd);
+    
+    public abstract Map<String, Object> getAuthorId(Integer idValue) throws ClassNotFoundException, SQLException;
     
 }

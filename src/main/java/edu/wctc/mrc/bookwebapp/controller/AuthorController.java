@@ -44,6 +44,7 @@ private static final String EXECUTE_INSERT="insert";
 private static final String EXECUTE_DELETE="delete";
 private static final String EXECUTE_SWITCH_MODE="switch mode";
 private static final String EXECUTE_SET_READ_MODE="set read mode";
+private static final String UPDATE_PAGE="updateDetails.jsp";
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -80,7 +81,7 @@ public void init() throws ServletException{
         
         configDbConnection();
         
-        String destination = RESULT_PAGE;
+        String destinationPage = RESULT_PAGE;
         String action = request.getParameter(ACTION_PARAM);
         String insertValue="";
 //        modeValue="READ";
@@ -114,6 +115,7 @@ public void init() throws ServletException{
          
          if(execute.equalsIgnoreCase("set read mode")){
              this.modeValue="READ";
+             request.setAttribute("authorList", authService.getAuthorList());
              
          }
          if(execute.equalsIgnoreCase("switch mode")){
@@ -123,26 +125,47 @@ public void init() throws ServletException{
              else{
                  this.modeValue="READ";
              }
+             request.setAttribute("authorList", authService.getAuthorList());
          } 
          
          if(execute.equalsIgnoreCase("update")){
              
-             int author_id = Integer.parseInt(request.getParameter("author_id"));
+             Integer authorId = Integer.parseInt(request.getParameter("author_id"));
 //             String authorName = request.getParameter("update_value");
-             String authorName = request.getParameter("update_test");
-             authService.modifyAuthorById(authorName,author_id);
+//             String authorName = request.getParameter("update_test");
+//             authService.modifyAuthorById(authorName,author_id);
              this.modeValue="EDIT";
+             destinationPage=UPDATE_PAGE;
+//             authService.getAuthorById(authorId);
+              request.setAttribute("author_id",authorId);
+               request.setAttribute("authorRecord",  authService.getAuthorById(authorId));
+//             authService.modifyAuthorById(authorName, author_id);
+         }
+         
+          if(execute.equalsIgnoreCase("save")){
+             
+              String newName = request.getParameter("update_value");
+              Integer id = Integer.parseInt(request.getParameter("updated_author_id"));
+              authService.modifyAuthorById(newName, id);
+//              authService.addNewAuthor(insertValue);
+              this.modeValue="EDIT";
+              request.setAttribute("authorList", authService.getAuthorList());
+              destinationPage=RESULT_PAGE;
+      
          }
          
           if(execute.equalsIgnoreCase("delete")){
-             int author_id = Integer.parseInt(request.getParameter("author_id"));
-              authService.deleteAuthorById(author_id);
+             int authorId = Integer.parseInt(request.getParameter("author_id"));
+              authService.deleteAuthorById(authorId);
+               request.setAttribute("author_id",authorId);
              this.modeValue="EDIT";
+             request.setAttribute("authorList", authService.getAuthorList());
          }
           if(execute.equalsIgnoreCase("insert")){
               insertValue = request.getParameter("insert_value");
               authService.addNewAuthor(insertValue);
-              this.modeValue="EDIT";    
+              this.modeValue="EDIT";
+              request.setAttribute("authorList", authService.getAuthorList());
           }
          
          
@@ -155,12 +178,12 @@ public void init() throws ServletException{
 //         request.setAttribute("insert_value",insertValue);
 //         request.setAttribute("update_value",insertValue);
 
-        request.setAttribute("authorList", authService.getAuthorList());
+//        request.setAttribute("authorList", authService.getAuthorList());
         } catch (Exception e) {
             request.setAttribute("errorMsg", e.getMessage());
         }
          RequestDispatcher view
-                = request.getRequestDispatcher(RESULT_PAGE);
+                = request.getRequestDispatcher(destinationPage);
         view.forward(request, response);
     }
     

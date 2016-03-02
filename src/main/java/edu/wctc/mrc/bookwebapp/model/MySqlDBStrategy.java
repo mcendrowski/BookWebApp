@@ -426,11 +426,11 @@ public class MySqlDBStrategy implements DBStrategy, Serializable {
 //        testFindAllRecords();
 //        testInsertRecord();
 //        testDeleteRecord();
-        testDeleteById();
+//        testDeleteById();
 //        testUpdateById();
 //        testBuildInsertStatement();
 //        testInsertRecord();
-//        testFindRecordById();
+        testFindRecordById();
 //        testPrepareSelectStatement();
 //        testFindOneRecord();
     }
@@ -455,7 +455,7 @@ public class MySqlDBStrategy implements DBStrategy, Serializable {
       public static void testFindRecordById() throws ClassNotFoundException, SQLException {
         DBStrategy db = new MySqlDBStrategy();
         db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
-        Map<String, Object> rawData = db.findRecordById("author", "author_id", 2);
+        Map<String, Object> rawData = db.findRecordById("author", "author_id", 1);
         
           
 

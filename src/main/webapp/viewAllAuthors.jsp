@@ -28,7 +28,7 @@
                     <form method="POST" action="AuthorController">        
 
 
-                        <input type="submit" value=${modeValue} name="modeValue">
+                        <input type="submit" value="${modeValue}" name="modeValue">
                         <input type="hidden" name="execute" value="switch mode">
 
                     </form> 
@@ -52,21 +52,15 @@
                                 <td class="text-right">${item.authorId}</td>
                                 <%-- <td class="text-left">${item.authorName}</td> --%>
 
-                                <td class="col-md-4 text-center">
-                                    
-                                        <input type="text" name="update_value" value="${item.authorName}" form="update_form">
-                                        
-                                    
-                                </td>
+                                <td class="col-md-4 text-center">${item.authorName}</td>
                             
                             <td class="text-left">${item.dateAdded}</td>
                             <td class="col-md-2 text-center">
                                 
-                                <form method="POST" action="AuthorController" id="update_form"> 
+                                <form method="POST" action="AuthorController"> 
                                 <input type="submit" value="update" name="submit">
-                                <input type="hidden" name="author_id" value=${item.authorId}>
-                                <input type="hidden" name ="execute" value ="update">
-                                <input type="hidden" name ="update_test" value="test of update">
+                                <input type="hidden" name="author_id" value="${item.authorId}">
+                                <input type="hidden" name ="execute" value ="update">                                
                                 </form>
                             </td>
                             
@@ -76,7 +70,7 @@
                                 <form method="POST" action="AuthorController">        
                                     <input type="submit" value="delete" name="submit"> 
                                     <input type="hidden" name="execute" value="delete">
-                                    <input type="hidden" name="author_id" value=${item.authorId}>
+                                    <input type="hidden" name="author_id" value="${item.authorId}">
 
                                 </form>
 

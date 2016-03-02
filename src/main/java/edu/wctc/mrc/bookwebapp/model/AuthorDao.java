@@ -20,7 +20,6 @@ import javax.inject.Inject;
  *
  * @author mcendrowski
  */
-
 //@SessionScoped
 @Dependent
 public class AuthorDao implements AuthorDaoStrategy, Serializable {
@@ -30,28 +29,26 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
     // should come from config file
     // homework - deleting using id
     // pass table, primary key and value
-    
+
 //    @Inject
 //    private DBStrategy db; // = new MySqlDBStrategy();
-    
     private DBStrategy db = new MySqlDBStrategy();
-    
+
 //    private final String DRIVER = "com.mysql.jdbc.Driver";
 //    private final String URL = "jdbc:mysql://localhost:3306/book";
 //    private final String USER = "root";
 //    private final String PWD = "admin";
-    
     private String driver;
     private String url;
     private String user;
     private String pwd;
-    
-    public void initDao(String driver, String url, String user, String pwd){
+
+    public void initDao(String driver, String url, String user, String pwd) {
         setDriver(driver);
         setUrl(url);
         setUser(user);
         setPwd(pwd);
-        
+
     }
 
     public String getDriver() {
@@ -85,7 +82,7 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
     public void setPwd(String pwd) {
         this.pwd = pwd;
     }
-    
+
     public AuthorDao() {
     }
 
@@ -96,36 +93,31 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
     public void setDb(DBStrategy db) {
         this.db = db;
     }
-    
-    
-    
-    
-    public int deleteAuthorById(Integer id) throws ClassNotFoundException, SQLException{
-         System.out.println(driver);
-         System.out.println(url);
-         System.out.println(user);
-         System.out.println(pwd);
+
+    public int deleteAuthorById(Integer id) throws ClassNotFoundException, SQLException {
+        System.out.println(driver);
+        System.out.println(url);
+        System.out.println(user);
+        System.out.println(pwd);
         db.openConnection(driver, url, user, pwd);
-         
-         int result = db.deleteById("author","author_id",id);
-         
-         db.closeConnection();
-         return result;
-         
-         
-         
+
+        int result = db.deleteById("author", "author_id", id);
+
+        db.closeConnection();
+        return result;
+
     }
-    
-        public int updateAuthorById(String authorName, Integer authorId) throws ClassNotFoundException, SQLException, Exception{
-         db.openConnection(driver, url, user, pwd);
-         
-         
-            int recordsUpdated = db.updateRecordById("author", Arrays.asList("author_name"), 
-                                       Arrays.asList(authorName),
-                                       "author_id", authorId);         
-         
-         db.closeConnection();
-         return recordsUpdated;
+
+    public int updateAuthorById(String authorName, Integer authorId) throws ClassNotFoundException, SQLException, Exception {
+//        db.openConnection(driver, url, user, pwd);
+        db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
+
+        int recordsUpdated = db.updateRecordById("author", Arrays.asList("author_name"),
+                Arrays.asList(authorName),
+                "author_id", authorId);
+
+        db.closeConnection();
+        return recordsUpdated;
     }
 
 //    db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
@@ -150,94 +142,128 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
         }
         db.closeConnection();
 
-
         return authors;
-}
-    
-        public Author getAuthorById(Object idValue) throws ClassNotFoundException, SQLException {
-        db.openConnection(driver, url, user, pwd);
+    }
 
-        Map<String, Object> rawData = db.findRecordById("author","author_id", idValue);
+    public Author getAuthorById(Integer idValue) throws ClassNotFoundException, SQLException {
+//         db.openConnection(driver, url, user, pwd);
+         
+         db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
+         
+         
+
+        Map<String, Object> rawData = db.findRecordById("author", "author_id", idValue);
 
 //        Author author = new Author();
+        Author author = new Author();
+//        Integer id = idValue;
+        author.setAuthorId(idValue);
 
-        
-            Author author = new Author();
-            Integer id = new Integer(idValue.toString());
-            author.setAuthorId(id);
+        String name = rawData.get("author_name") == null ? "" : rawData.get("author_name").toString();
+        author.setAuthorName(name);
+        Date date = rawData.get("date_added") == null ? null : (Date) rawData.get("date_added");
+        author.setDateAdded(date);
 
-            String name = rawData.get("author_name") == null ? "" : rawData.get("author_name").toString();
-            author.setAuthorName(name);
-            Date date = rawData.get("date_added") == null ? null : (Date) rawData.get("date_added");
-            author.setDateAdded(date);
-            
-        
         db.closeConnection();
 
-
         return author;
-}
-    public int deleteAuthorRecord(String primaryKey,int value) throws SQLException, ClassNotFoundException{
-         int result;
-        db.openConnection(driver, url, user, pwd);
-         result = db.deleteRecord("author", primaryKey, value);
-         db.closeConnection();
-         return result;
     }
     
-        public int insertAuthorRecord(String authorName) throws SQLException, Exception {
-         int result;
-         db.openConnection(driver, url, user, pwd);
-         
+        public Map<String, Object> getAuthorId(Integer idValue) throws ClassNotFoundException, SQLException {
+//         db.openConnection(driver, url, user, pwd);
+         db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
+
+        Map<String, Object> rawData = db.findRecordById("author", "author_id", idValue);
         
-            result = db.insertRecord("author", Arrays.asList("author_name","date_added"), 
-                                      Arrays.asList(authorName,new Date()));         
-         
-         
-         db.closeConnection();
-         return result;
+        db.closeConnection();
+        
+        return rawData;
+
+////        Author author = new Author();
+//        Author author = new Author();
+//        Integer id = (Integer) idValue;
+//        author.setAuthorId(id);
+//
+//        String name = rawData.get("author_name") == null ? "" : rawData.get("author_name").toString();
+//        author.setAuthorName(name);
+//        Date date = rawData.get("date_added") == null ? null : (Date) rawData.get("date_added");
+//        author.setDateAdded(date);
+//
+//        db.closeConnection();
+//
+//        return author;
     }
 
-public static void main(String[] args) throws ClassNotFoundException, SQLException, Exception {
+    public int deleteAuthorRecord(String primaryKey, int value) throws SQLException, ClassNotFoundException {
+        int result;
+        db.openConnection(driver, url, user, pwd);
+        result = db.deleteRecord("author", primaryKey, value);
+        db.closeConnection();
+        return result;
+    }
+
+    public int insertAuthorRecord(String authorName) throws SQLException, Exception {
+        int result;
+        db.openConnection(driver, url, user, pwd);
+
+        result = db.insertRecord("author", Arrays.asList("author_name", "date_added"),
+                Arrays.asList(authorName, new Date()));
+
+        db.closeConnection();
+        return result;
+    }
+
+    public static void main(String[] args) throws ClassNotFoundException, SQLException, Exception {
 //        testGetAuthorList();
-        testDeleteAuthorById();
+//        testDeleteAuthorById();
 //        testUpdateAuthorById();
 //        testInsertAuthor();
-//        testGetAuthorById();
+        testGetAuthorById();
+//        testGetAuthorId();
     }
 
-public static void testGetAuthorList() throws ClassNotFoundException, SQLException {
+    public static void testGetAuthorList() throws ClassNotFoundException, SQLException {
         AuthorDaoStrategy dao = new AuthorDao();
         List<Author> authors = dao.getAuthorList();
         System.out.println(authors);
     }
 
-public static void testGetAuthorById() throws ClassNotFoundException, SQLException {
+    public static void testGetAuthorById() throws ClassNotFoundException, SQLException {
         AuthorDaoStrategy dao = new AuthorDao();
-        Author author = dao.getAuthorById(3);
+//        Integer id = 1;
+        Author author = dao.getAuthorById(1);
+
+//    Author author = new Author(2);
+        
         System.out.println(author);
     }
-
-public static void testDeleteAuthorById() throws ClassNotFoundException, SQLException {
+    
+    public static void testGetAuthorId() throws ClassNotFoundException, SQLException {
         AuthorDaoStrategy dao = new AuthorDao();
-        dao.deleteAuthorById(6);       
+//        Object object = new Integer(1);
+        Map map = dao.getAuthorId(2);
+        System.out.println(map);
     }
 
+    public static void testDeleteAuthorById() throws ClassNotFoundException, SQLException {
+        AuthorDaoStrategy dao = new AuthorDao();
+        dao.deleteAuthorById(6);
+    }
 
-public static void testUpdateAuthorById() throws ClassNotFoundException, SQLException, Exception{
-    AuthorDaoStrategy dao = new AuthorDao();
+    public static void testUpdateAuthorById() throws ClassNotFoundException, SQLException, Exception {
+        AuthorDaoStrategy dao = new AuthorDao();
 //    List<String> colNames = Arrays.asList("author_name", "date_added");
 //    List<Object> colValues = Arrays.asList("Mefisto", "2002-02-11");
-    dao.updateAuthorById("Warewolf", 1);
-}
+        dao.updateAuthorById("Warewolf", 1);
+    }
 
-public static int testInsertAuthor() throws ClassNotFoundException, SQLException, Exception{
-    int result;
-    AuthorDaoStrategy dao = new AuthorDao();
+    public static int testInsertAuthor() throws ClassNotFoundException, SQLException, Exception {
+        int result;
+        AuthorDaoStrategy dao = new AuthorDao();
 //    List<String> colNames = Arrays.asList("author_name", "date_added");
 //    List<Object> colValues = Arrays.asList("Germanicus", "2007-02-11");
-    result = dao.insertAuthorRecord( "Frankenstein");    
-    return result;
-}
+        result = dao.insertAuthorRecord("Frankenstein");
+        return result;
+    }
 
 }
