@@ -18,9 +18,9 @@ import javax.inject.Inject;
  */
 @SessionScoped
 public class AuthorService implements Serializable {
-//    @Inject
-//    private AuthorDaoStrategy dao; // = new AuthorDao();
-    private AuthorDaoStrategy dao = new AuthorDao();
+    @Inject
+    private AuthorDaoStrategy dao; // = new AuthorDao();
+//    private AuthorDaoStrategy dao = new AuthorDao();
 
     public AuthorService() {
     }

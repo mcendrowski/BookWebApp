@@ -27,7 +27,8 @@
                 <div class="row">
                     <div class="col-md-4 col-md-offset-4">
                         <input type="submit" class="btn btn-info btn-large" name="submit" value="Open View All Authors page"/>
-                        <input type="hidden" name="execute" value="set read mode"/>    
+                        <input type="hidden" name="initial_settings" value="initial_settings"> 
+                        
                     </div>
                 </div>
             </div>

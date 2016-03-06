@@ -9,6 +9,7 @@ import edu.wctc.mrc.bookwebapp.model.AuthorService;
 import edu.wctc.mrc.bookwebapp.model.MockAuthorDao;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import javax.inject.Inject;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -19,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-
 /**
  *
  * @author mcendrowski
@@ -27,26 +27,26 @@ import javax.servlet.http.HttpSession;
 @WebServlet(name = "AuthorController", urlPatterns = {"/AuthorController"})
 public class AuthorController extends HttpServlet {
 
- // db config
- private String driverClass;
- private String url;
- private String userName;
- private String password;
- 
- private String modeValue;
-    
-    
-@Inject
-private AuthorService authService;
+    // db config
+    private String driverClass;
+    private String url;
+    private String userName;
+    private String password;
 
-private static final String RESULT_PAGE = "/viewAllAuthors.jsp";
-private static final String ACTION_PARAM="action";
-private static final String EXECUTE_UPDATE="update";
-private static final String EXECUTE_INSERT="insert";
-private static final String EXECUTE_DELETE="delete";
-private static final String EXECUTE_SWITCH_MODE="switch mode";
-private static final String EXECUTE_SET_READ_MODE="set read mode";
-private static final String UPDATE_PAGE="updateDetails.jsp";
+    private String modeValue;
+
+    @Inject
+    private AuthorService authService;
+
+    private static final String RESULT_PAGE = "/viewAllAuthors.jsp";
+    private static final String ACTION_PARAM = "action";
+    private static final String EXECUTE_UPDATE = "update";
+    private static final String EXECUTE_INSERT = "insert";
+    private static final String EXECUTE_DELETE = "delete";
+    private static final String EXECUTE_SWITCH_MODE = "switch mode";
+    private static final String EXECUTE_SET_READ_MODE = "set read mode";
+    private static final String UPDATE_PAGE = "updateDetails.jsp";
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -56,158 +56,143 @@ private static final String UPDATE_PAGE="updateDetails.jsp";
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-
-@Override
-public void init() throws ServletException{
-    driverClass = getServletContext().getInitParameter("db.driver.class");
-    url = getServletContext().getInitParameter("db.url");
-    userName = getServletContext().getInitParameter("db.username");
-    password = getServletContext().getInitParameter("db.password");
-    
-}
-
-  private void updatemodeValue(HttpServletRequest request) {
-        String modeValue = request.getParameter("modeValue");
-        this.modeValue = modeValue;      
+    @Override
+    public void init() throws ServletException {
+        driverClass = getServletContext().getInitParameter("db.driver.class");
+        url = getServletContext().getInitParameter("db.url");
+        userName = getServletContext().getInitParameter("db.username");
+        password = getServletContext().getInitParameter("db.password");
 
     }
-  
-   private void updateRequest(HttpServletRequest request) {
-        request.setAttribute("modeValue", this.modeValue);
-   }
-    
+
+    private void setColorAttribute(HttpServletRequest request) {
+
+        String defineColor = request.getParameter("color");
+
+        String colorAttribute = "";
+        if (defineColor.equalsIgnoreCase("normal")) {
+            colorAttribute = "black";
+        } else {
+            colorAttribute = "red";
+        }
+
+        request.setAttribute("color", colorAttribute);
+    }
+
+    private void setUpdateAttributes(HttpServletRequest request) throws ClassNotFoundException, SQLException {
+
+        Integer authorId = Integer.parseInt(request.getParameter("update_author_id"));
+        request.setAttribute("author_id", authorId);
+        request.setAttribute("updated_record", authService.getAuthorById(authorId));
+    }
+
+    private void setInsertAttributes(HttpServletRequest request) throws Exception {
+
+        String insertValue = request.getParameter("insert_value");
+        authService.addNewAuthor(insertValue);
+        request.setAttribute("authorList", authService.getAuthorList());
+    }
+
+    private void setDeleteAttributes(HttpServletRequest request) throws Exception {
+        int authorId = Integer.parseInt(request.getParameter("delete_author_id"));
+        authService.deleteAuthorById(authorId);
+        request.setAttribute("authorList", authService.getAuthorList());
+
+    }
+
+    private void setConfirmUpdateAttributes(HttpServletRequest request) throws SQLException, Exception {
+
+        String newName = request.getParameter("new_name");
+        Integer id = Integer.parseInt(request.getParameter("updated_author_id"));
+        authService.modifyAuthorById(newName, id);
+
+        request.setAttribute("authorList", authService.getAuthorList());
+
+    }
+
+    private void setInitialAttributes(HttpSession session, HttpServletRequest request) throws ClassNotFoundException, SQLException {
+        session.setAttribute("mode", "READ");
+        session.setAttribute("color", "black");
+        request.setAttribute("authorList", authService.getAuthorList());
+    }
+
+
+    private void switchModeAttributes(HttpSession session, HttpServletRequest request) throws Exception {
+
+
+        if ((session.getAttribute("mode").toString()).equalsIgnoreCase("READ")) {
+            session.setAttribute("mode", "EDIT");
+            session.setAttribute("color", "red");
+        } else {
+            session.setAttribute("mode", "READ");
+            session.setAttribute("color", "black");
+        }
+
+          
+        request.setAttribute("authorList", authService.getAuthorList());
+
+    }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
-        
-         HttpSession session = request.getSession();
+
+        HttpSession session = request.getSession();
         ServletContext ctx = request.getServletContext();
-        
-       
+
         String fontColor = request.getParameter("fontColor");
-        
+
         configDbConnection();
-        
+
         String destinationPage = RESULT_PAGE;
-        String action = request.getParameter(ACTION_PARAM);
-        String insertValue="";
-//        modeValue="READ";
+
+//        configDbConnection();
         
-        try  {
+        try {
             /* TODO output your page here. You may use following sample code. */
 //         MockAuthorDao ns = new MockAuthorDao();
 //         AuthorService ns = new AuthorService();
-    
-//        if(action.equalsIgnoreCase("addEdit")){
-//           if (modeValue.equalsIgnoreCase("EDIT")){
-//               modeValue="READ";
-//           }
-//           else{
-//               modeValue="EDIT";
-//           }
-////            request.setAttribute("modeValue", "ALLOW EDIT");
-//            updateRequest(request);
-//        }
-//        else {
-//            modeValue="READ";
-//            updateRequest(request);
-//        }
 
 
-         request.setAttribute("authorList", authService.getAuthorList());
-         
-         String execute = request.getParameter("execute");
-         
-           if(execute.equalsIgnoreCase("blue color")){
-             this.modeValue="READ";
-             
-              String color = request.getParameter("color");
-            // Session scope is per user
-            session.setAttribute("color", color);
-             
-             
-             request.setAttribute("authorList", authService.getAuthorList());
-             
-         }
-         
-         
-         if(execute.equalsIgnoreCase("set read mode")){
-             this.modeValue="READ";
-             request.setAttribute("authorList", authService.getAuthorList());
-             
-         }
-         if(execute.equalsIgnoreCase("switch mode")){
-             if (this.modeValue.equalsIgnoreCase("READ")){
-                 this.modeValue="EDIT";
-             }
-             else{
-                 this.modeValue="READ";
-             }
-             request.setAttribute("authorList", authService.getAuthorList());
-         } 
-         
-         if(execute.equalsIgnoreCase("update")){
-             
-             Integer authorId = Integer.parseInt(request.getParameter("author_id"));
-//             String authorName = request.getParameter("update_value");
-//             String authorName = request.getParameter("update_test");
-//             authService.modifyAuthorById(authorName,author_id);
-             this.modeValue="EDIT";
-             destinationPage=UPDATE_PAGE;
-//             authService.getAuthorById(authorId);
-              request.setAttribute("author_id",authorId);
-               request.setAttribute("authorRecord",  authService.getAuthorById(authorId));
-//             authService.modifyAuthorById(authorName, author_id);
-         }
-         
-          if(execute.equalsIgnoreCase("save")){
-             
-              String newName = request.getParameter("update_value");
-              Integer id = Integer.parseInt(request.getParameter("updated_author_id"));
-              authService.modifyAuthorById(newName, id);
-//              authService.addNewAuthor(insertValue);
-              this.modeValue="EDIT";
-              request.setAttribute("authorList", authService.getAuthorList());
-              destinationPage=RESULT_PAGE;
-      
-         }
-         
-          if(execute.equalsIgnoreCase("delete")){
-             int authorId = Integer.parseInt(request.getParameter("author_id"));
-              authService.deleteAuthorById(authorId);
-               request.setAttribute("author_id",authorId);
-             this.modeValue="EDIT";
-             request.setAttribute("authorList", authService.getAuthorList());
-         }
-          if(execute.equalsIgnoreCase("insert")){
-              insertValue = request.getParameter("insert_value");
-              authService.addNewAuthor(insertValue);
-              this.modeValue="EDIT";
-              request.setAttribute("authorList", authService.getAuthorList());
-          }
-         
-         
-//         String author_id =request.getParameter("author_id");
-//         String submit =request.getParameter("submit");
-         
-         request.setAttribute("modeValue", this.modeValue);         
-//         request.setAttribute("author_id",author_id);
-//         request.setAttribute("submit",submit);
-//         request.setAttribute("insert_value",insertValue);
-//         request.setAttribute("update_value",insertValue);
+            if (request.getParameter("initial_settings") != null) {
+                setInitialAttributes(session, request);
+                destinationPage = RESULT_PAGE;
+            }
 
-//        request.setAttribute("authorList", authService.getAuthorList());
+            if (request.getParameter("reset_mode") != null) {
+                setInitialAttributes(session, request);
+                destinationPage = RESULT_PAGE;
+            }
+
+            if (request.getParameter("switch_mode") != null) {
+                switchModeAttributes(session, request);
+                destinationPage = RESULT_PAGE;
+            }
+
+            if (request.getParameter("update") != null) {
+                setUpdateAttributes(request);
+                destinationPage = UPDATE_PAGE;
+            } else if (request.getParameter("insert") != null) {
+                setInsertAttributes(request);
+                destinationPage = RESULT_PAGE;
+            } else if (request.getParameter("delete") != null) {
+                setDeleteAttributes(request);
+                destinationPage = RESULT_PAGE;
+            } else if (request.getParameter("confirm_update") != null) {
+                setConfirmUpdateAttributes(request);
+                destinationPage = RESULT_PAGE;
+            }
+
+
         } catch (Exception e) {
             request.setAttribute("errorMsg", e.getMessage());
         }
-         RequestDispatcher view
+        RequestDispatcher view
                 = request.getRequestDispatcher(destinationPage);
         view.forward(request, response);
     }
-    
-    private void configDbConnection(){
+
+    private void configDbConnection() {
         authService.getDao().initDao(driverClass, url, userName, password);
     }
 

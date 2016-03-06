@@ -30,9 +30,9 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
     // homework - deleting using id
     // pass table, primary key and value
 
-//    @Inject
-//    private DBStrategy db; // = new MySqlDBStrategy();
-    private DBStrategy db = new MySqlDBStrategy();
+    @Inject
+    private DBStrategy db; // = new MySqlDBStrategy();
+//    private DBStrategy db = new MySqlDBStrategy();
 
 //    private final String DRIVER = "com.mysql.jdbc.Driver";
 //    private final String URL = "jdbc:mysql://localhost:3306/book";
@@ -43,13 +43,8 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
     private String user;
     private String pwd;
 
-    public void initDao(String driver, String url, String user, String pwd) {
-        setDriver(driver);
-        setUrl(url);
-        setUser(user);
-        setPwd(pwd);
-
-    }
+    
+ 
 
     public String getDriver() {
         return driver;
@@ -109,8 +104,8 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
     }
 
     public int updateAuthorById(String authorName, Integer authorId) throws ClassNotFoundException, SQLException, Exception {
-//        db.openConnection(driver, url, user, pwd);
-        db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
+        db.openConnection(driver, url, user, pwd);
+//        db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
 
         int recordsUpdated = db.updateRecordById("author", Arrays.asList("author_name"),
                 Arrays.asList(authorName),
@@ -124,6 +119,8 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
     @Override
     public List<Author> getAuthorList() throws ClassNotFoundException, SQLException {
         db.openConnection(driver, url, user, pwd);
+        
+//         db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
 
         List<Map<String, Object>> rawData = db.findAllRecords("author", 0);
 
@@ -146,9 +143,9 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
     }
 
     public Author getAuthorById(Integer idValue) throws ClassNotFoundException, SQLException {
-//         db.openConnection(driver, url, user, pwd);
+         db.openConnection(driver, url, user, pwd);
          
-         db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
+//         db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
          
          
 
@@ -170,8 +167,8 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
     }
     
         public Map<String, Object> getAuthorId(Integer idValue) throws ClassNotFoundException, SQLException {
-//         db.openConnection(driver, url, user, pwd);
-         db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
+         db.openConnection(driver, url, user, pwd);
+//         db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
 
         Map<String, Object> rawData = db.findRecordById("author", "author_id", idValue);
         
@@ -211,6 +208,15 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
 
         db.closeConnection();
         return result;
+    }
+    
+       @Override
+    public void initDao(String driver, String url, String user, String pwd) {
+        setDriver(driver);
+        setUrl(url);
+        setUser(user);
+        setPwd(pwd);
+
     }
 
     public static void main(String[] args) throws ClassNotFoundException, SQLException, Exception {

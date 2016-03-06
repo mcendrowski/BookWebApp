@@ -16,14 +16,15 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Update detail page</title>
     </head>
-    <body>
+    <body style="color:${color};">
         <p></p>
         <form method="POST" action="AuthorController"> 
-            <input type="text" name="updated_author_id" value="${authorRecord.authorId}"><br>
-            <input type="text" name="update_value" value="${authorRecord.authorName}"><br>
-            <input type="text" name="date_added" value="${authorRecord.dateAdded}">
-            <input type="submit" value="save" name="submit">
-            <input type="hidden" name ="execute" value ="save">            
+            <input type="text" name="author_id" value="${updated_record.authorId}" disabled><br>
+            <input type="text" name="new_name" value="${updated_record.authorName}"><br>
+            <input type="text" name="date_added" value="${updated_record.dateAdded}" disabled>
+            <input type="submit" name="submit" value="save">
+            <input type="hidden" name ="confirm_update" value ="confirm_update"> 
+            <input type="hidden" name="updated_author_id" value="${updated_record.authorId}">
         </form>
 
    
@@ -47,11 +48,32 @@
 
 
             %>
-            
+        </h3>
                     <h3> Attribute names : 
             <%                for (Enumeration<String> e = request.getAttributeNames(); e.hasMoreElements();) {
 
                     out.println(e.nextElement()+"     ");
+                }
+
+
+            %>
+        </h3>
+        
+                            <h3> Session attribute names : 
+            <%                for (Enumeration<String> s = session.getAttributeNames(); s.hasMoreElements();) {
+
+                    out.println(s.nextElement()+"     ");
+                }
+
+
+            %>
+        </h3>
+        
+          
+                            <h3> Session attributes : 
+            <%                for (Enumeration<String> s = session.getAttributeNames(); s.hasMoreElements();) {
+
+                    out.println(session.getAttribute(s.nextElement()).toString()+"     ");
                 }
 
 

@@ -18,7 +18,8 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
         <title>JSP Page</title>
     </head>
-    <body>
+    <body style="color:${color};">
+       
         
         <%--
             <jsp:useBean id="user" class="user.UserData" scope="session"/>
@@ -30,21 +31,24 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6 col-md-offset-4">
+                    
                     <form method="POST" action="AuthorController">        
-
-
-                        <input type="submit" value="${modeValue}" name="modeValue">
-                        <input type="hidden" name="execute" value="switch mode">
-
-                    </form> 
-                    <form method="POST" action="AuthorController">        
-
-
-                        <input type="submit" value="blue" name="color">
-                        <input type="hidden" name="execute" value="blue color">
-
+                        <input type="submit" name="submit" value="RESET">
+                        <input type="hidden" name="reset_mode" value="reset_mode">
                     </form>
+                        
+                        
+                    <form method="POST" action="AuthorController">        
+                        <input type="submit" name="mode" value="${mode}">
+                        <input type="hidden" name="switch_mode" value="switch_mode">
+                    </form>
+                        
+                        <br> 
+                        
+               
+                        
                 </div>
+                        
             </div>
             <p></p>
             <p></p>
@@ -70,9 +74,9 @@
                             <td class="col-md-2 text-center">
                                 
                                 <form method="POST" action="AuthorController"> 
-                                <input type="submit" value="update" name="submit">
-                                <input type="hidden" name="author_id" value="${item.authorId}">
-                                <input type="hidden" name ="execute" value ="update">                                
+                                <input type="submit" name="submit" value="update">
+                                <input type="hidden" name="update_author_id" value="${item.authorId}">
+                                <input type="hidden" name ="update" value ="update">                                
                                 </form>
                             </td>
                             
@@ -80,9 +84,9 @@
                             <td class="col-md-2 text-center">
 
                                 <form method="POST" action="AuthorController">        
-                                    <input type="submit" value="delete" name="submit"> 
-                                    <input type="hidden" name="execute" value="delete">
-                                    <input type="hidden" name="author_id" value="${item.authorId}">
+                                    <input type="submit" name="submit" value="delete"> 
+                                    <input type="hidden" name="delete" value="delete">
+                                    <input type="hidden" name="delete_author_id" value="${item.authorId}">
 
                                 </form>
 
@@ -101,8 +105,8 @@
                                 <td class="col-md-2 text-center">
 
 
-                                    <input type="submit" value="Insert" name="submit"> 
-                                    <input type="hidden" name="execute" value="insert">
+                                    <input type="submit" name="submit" value="insert"> 
+                                    <input type="hidden" name="insert" value="insert">
                                 </td>
 
                             </tr>
@@ -140,6 +144,28 @@
 
             %>
 
+        <h3> Session attribute names : 
+            <%                for (Enumeration<String> s = session.getAttributeNames(); s.hasMoreElements();) {
+
+                    out.println(s.nextElement());
+                }
+
+
+            %>
+        </h3>
+        
+                <h3> Session attributes :
+
+           <%                for (Enumeration<String> s = session.getAttributeNames(); s.hasMoreElements();) {
+
+                    out.println(session.getAttribute(s.nextElement()).toString());
+                }
+
+
+            %>
+        </h3>
+        </h3>
+            
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     </body>
 </html>

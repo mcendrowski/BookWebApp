@@ -47,4 +47,6 @@ public interface AuthorDaoStrategy {
     
     public abstract Map<String, Object> getAuthorId(Integer idValue) throws ClassNotFoundException, SQLException;
     
+    
+    
 }
