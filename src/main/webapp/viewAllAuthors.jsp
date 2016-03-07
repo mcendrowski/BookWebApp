@@ -32,11 +32,13 @@
             <div class="row">
                 <div class="col-md-6 col-md-offset-4">
                     
+                    <p>${user}</p>
                     <form method="POST" action="AuthorController">        
                         <input type="submit" name="submit" value="RESET">
                         <input type="hidden" name="reset_mode" value="reset_mode">
                     </form>
-                        
+                       
+                    <br> 
                         
                     <form method="POST" action="AuthorController">        
                         <input type="submit" name="mode" value="${mode}">
@@ -44,7 +46,11 @@
                     </form>
                         
                         <br> 
+                      <form method="POST" action="AuthorController">        
+                        <input type="submit" name="submit" value="${show_hide_user_button}">
+                        <input type="hidden" name="show_hide_user" value="show_hide_user">
                         
+                    </form>  
                
                         
                 </div>

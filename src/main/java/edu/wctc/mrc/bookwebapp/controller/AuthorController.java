@@ -65,19 +65,19 @@ public class AuthorController extends HttpServlet {
 
     }
 
-    private void setColorAttribute(HttpServletRequest request) {
-
-        String defineColor = request.getParameter("color");
-
-        String colorAttribute = "";
-        if (defineColor.equalsIgnoreCase("normal")) {
-            colorAttribute = "black";
-        } else {
-            colorAttribute = "red";
-        }
-
-        request.setAttribute("color", colorAttribute);
-    }
+//    private void setColorAttribute(HttpServletRequest request) {
+//
+//        String defineColor = request.getParameter("color");
+//
+//        String colorAttribute = "";
+//        if (defineColor.equalsIgnoreCase("normal")) {
+//            colorAttribute = "black";
+//        } else {
+//            colorAttribute = "red";
+//        }
+//
+//        request.setAttribute("color", colorAttribute);
+//    }
 
     private void setUpdateAttributes(HttpServletRequest request) throws ClassNotFoundException, SQLException {
 
@@ -110,12 +110,16 @@ public class AuthorController extends HttpServlet {
 
     }
 
-    private void setInitialAttributes(HttpSession session, HttpServletRequest request) throws ClassNotFoundException, SQLException {
+    private void setInitialAttributes(HttpSession session, HttpServletRequest request,ServletContext ctx) throws ClassNotFoundException, SQLException {
         session.setAttribute("mode", "READ");
         session.setAttribute("color", "black");
         request.setAttribute("authorList", authService.getAuthorList());
+        ctx.setAttribute("show_hide_user_button", "SHOW USER");
     }
 
+//    private void showUser(ServletContext ctx,HttpServletRequest request){
+//        ctx.setAttribute("user","author: Mariusz Cendrowski");
+//    }
 
     private void switchModeAttributes(HttpSession session, HttpServletRequest request) throws Exception {
 
@@ -126,6 +130,22 @@ public class AuthorController extends HttpServlet {
         } else {
             session.setAttribute("mode", "READ");
             session.setAttribute("color", "black");
+        }
+
+          
+        request.setAttribute("authorList", authService.getAuthorList());
+
+    }
+    
+        private void showHideUserAttributes(ServletContext ctx, HttpServletRequest request) throws Exception {
+
+
+        if ((ctx.getAttribute("show_hide_user_button").toString()).equalsIgnoreCase("SHOW USER")) {
+            ctx.setAttribute("show_hide_user_button", "HIDE USER");
+            ctx.setAttribute("user","user: Mariusz Cendrowski");
+        } else {
+            ctx.setAttribute("show_hide_user_button", "SHOW USER"); 
+            ctx.setAttribute("user","");
         }
 
           
@@ -155,12 +175,12 @@ public class AuthorController extends HttpServlet {
 
 
             if (request.getParameter("initial_settings") != null) {
-                setInitialAttributes(session, request);
+                setInitialAttributes(session, request,ctx);
                 destinationPage = RESULT_PAGE;
             }
 
             if (request.getParameter("reset_mode") != null) {
-                setInitialAttributes(session, request);
+                setInitialAttributes(session, request,ctx);
                 destinationPage = RESULT_PAGE;
             }
 
@@ -168,6 +188,14 @@ public class AuthorController extends HttpServlet {
                 switchModeAttributes(session, request);
                 destinationPage = RESULT_PAGE;
             }
+            
+            if (request.getParameter("show_hide_user") != null) {
+                showHideUserAttributes(ctx, request);
+                destinationPage = RESULT_PAGE;
+            }
+            
+            
+            
 
             if (request.getParameter("update") != null) {
                 setUpdateAttributes(request);
