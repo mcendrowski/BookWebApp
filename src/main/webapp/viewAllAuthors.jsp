@@ -33,20 +33,20 @@
                 <div class="col-md-6 col-md-offset-4">
                     
                     <p>${user}</p>
-                    <form method="POST" action="AuthorController">        
+                    <form method="POST" action="<%= response.encodeURL("AuthorController")%>">        
                         <input type="submit" name="submit" value="RESET">
                         <input type="hidden" name="reset_mode" value="reset_mode">
                     </form>
                        
                     <br> 
                         
-                    <form method="POST" action="AuthorController">        
+                    <form method="POST" action="<%= response.encodeURL("AuthorController")%>">        
                         <input type="submit" name="mode" value="${mode}">
                         <input type="hidden" name="switch_mode" value="switch_mode">
                     </form>
                         
                         <br> 
-                      <form method="POST" action="AuthorController">        
+                      <form method="POST" action="<%= response.encodeURL("AuthorController")%>">        
                         <input type="submit" name="submit" value="${show_hide_user_button}">
                         <input type="hidden" name="show_hide_user" value="show_hide_user">
                         
@@ -79,7 +79,7 @@
                             <td class="text-left">${item.dateAdded}</td>
                             <td class="col-md-2 text-center">
                                 
-                                <form method="POST" action="AuthorController"> 
+                                <form method="POST" action="<%= response.encodeURL("AuthorController")%>"> 
                                 <input type="submit" name="submit" value="update">
                                 <input type="hidden" name="update_author_id" value="${item.authorId}">
                                 <input type="hidden" name ="update" value ="update">                                
@@ -89,7 +89,7 @@
 
                             <td class="col-md-2 text-center">
 
-                                <form method="POST" action="AuthorController">        
+                                <form method="POST" action="<%= response.encodeURL("AuthorController")%>">        
                                     <input type="submit" name="submit" value="delete"> 
                                     <input type="hidden" name="delete" value="delete">
                                     <input type="hidden" name="delete_author_id" value="${item.authorId}">
@@ -102,7 +102,7 @@
 
                             </tr>
                         </c:forEach>
-                        <form method="POST" action="AuthorController"> 
+                        <form method="POST" action="<%= response.encodeURL("AuthorController")%>"> 
                             <tr>
 
                                 <td class="col-md-1 text-center"></td>    

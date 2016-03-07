@@ -22,7 +22,7 @@
        
        
         <p></p>
-         <form id="startingForm" name="startingForm" method="POST" action="AuthorController" >
+         <form id="startingForm" name="startingForm" method="POST" action="<%= response.encodeURL("AuthorController")%>" >
             <div class="container">
                 <div class="row">
                     <div class="col-md-4 col-md-offset-4">

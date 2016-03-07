@@ -78,7 +78,6 @@ public class AuthorController extends HttpServlet {
 //
 //        request.setAttribute("color", colorAttribute);
 //    }
-
     private void setUpdateAttributes(HttpServletRequest request) throws ClassNotFoundException, SQLException {
 
         Integer authorId = Integer.parseInt(request.getParameter("update_author_id"));
@@ -110,7 +109,7 @@ public class AuthorController extends HttpServlet {
 
     }
 
-    private void setInitialAttributes(HttpSession session, HttpServletRequest request,ServletContext ctx) throws ClassNotFoundException, SQLException {
+    private void setInitialAttributes(HttpSession session, HttpServletRequest request, ServletContext ctx) throws ClassNotFoundException, SQLException {
         session.setAttribute("mode", "READ");
         session.setAttribute("color", "black");
         request.setAttribute("authorList", authService.getAuthorList());
@@ -120,9 +119,7 @@ public class AuthorController extends HttpServlet {
 //    private void showUser(ServletContext ctx,HttpServletRequest request){
 //        ctx.setAttribute("user","author: Mariusz Cendrowski");
 //    }
-
     private void switchModeAttributes(HttpSession session, HttpServletRequest request) throws Exception {
-
 
         if ((session.getAttribute("mode").toString()).equalsIgnoreCase("READ")) {
             session.setAttribute("mode", "EDIT");
@@ -132,23 +129,20 @@ public class AuthorController extends HttpServlet {
             session.setAttribute("color", "black");
         }
 
-          
         request.setAttribute("authorList", authService.getAuthorList());
 
     }
-    
-        private void showHideUserAttributes(ServletContext ctx, HttpServletRequest request) throws Exception {
 
+    private void showHideUserAttributes(ServletContext ctx, HttpServletRequest request) throws Exception {
 
         if ((ctx.getAttribute("show_hide_user_button").toString()).equalsIgnoreCase("SHOW USER")) {
             ctx.setAttribute("show_hide_user_button", "HIDE USER");
-            ctx.setAttribute("user","user: Mariusz Cendrowski");
+            ctx.setAttribute("user", "user: Mariusz Cendrowski");
         } else {
-            ctx.setAttribute("show_hide_user_button", "SHOW USER"); 
-            ctx.setAttribute("user","");
+            ctx.setAttribute("show_hide_user_button", "SHOW USER");
+            ctx.setAttribute("user", "");
         }
 
-          
         request.setAttribute("authorList", authService.getAuthorList());
 
     }
@@ -167,20 +161,18 @@ public class AuthorController extends HttpServlet {
         String destinationPage = RESULT_PAGE;
 
 //        configDbConnection();
-        
         try {
             /* TODO output your page here. You may use following sample code. */
 //         MockAuthorDao ns = new MockAuthorDao();
 //         AuthorService ns = new AuthorService();
 
-
             if (request.getParameter("initial_settings") != null) {
-                setInitialAttributes(session, request,ctx);
+                setInitialAttributes(session, request, ctx);
                 destinationPage = RESULT_PAGE;
             }
 
             if (request.getParameter("reset_mode") != null) {
-                setInitialAttributes(session, request,ctx);
+                setInitialAttributes(session, request, ctx);
                 destinationPage = RESULT_PAGE;
             }
 
@@ -188,14 +180,11 @@ public class AuthorController extends HttpServlet {
                 switchModeAttributes(session, request);
                 destinationPage = RESULT_PAGE;
             }
-            
+
             if (request.getParameter("show_hide_user") != null) {
                 showHideUserAttributes(ctx, request);
                 destinationPage = RESULT_PAGE;
             }
-            
-            
-            
 
             if (request.getParameter("update") != null) {
                 setUpdateAttributes(request);
@@ -211,13 +200,18 @@ public class AuthorController extends HttpServlet {
                 destinationPage = RESULT_PAGE;
             }
 
-
         } catch (Exception e) {
             request.setAttribute("errorMsg", e.getMessage());
         }
-        RequestDispatcher view
-                = request.getRequestDispatcher(destinationPage);
-        view.forward(request, response);
+//        RequestDispatcher view
+//                = request.getRequestDispatcher(destinationPage);
+//        view.forward(request, response);
+
+        RequestDispatcher dispatcher
+                = getServletContext()
+                .getRequestDispatcher(response.encodeURL(destinationPage));
+        dispatcher.forward(request, response);
+
     }
 
     private void configDbConnection() {

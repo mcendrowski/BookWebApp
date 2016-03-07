@@ -18,7 +18,7 @@
     </head>
     <body style="color:${color};">
         <p></p>
-        <form method="POST" action="AuthorController"> 
+        <form method="POST" action="<%= response.encodeURL("AuthorController")%>"> 
             <input type="text" name="author_id" value="${updated_record.authorId}" disabled><br>
             <input type="text" name="new_name" value="${updated_record.authorName}"><br>
             <input type="text" name="date_added" value="${updated_record.dateAdded}" disabled>
