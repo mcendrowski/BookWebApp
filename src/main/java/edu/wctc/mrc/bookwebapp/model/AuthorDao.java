@@ -12,9 +12,12 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
+import javax.sql.DataSource;
 
 /**
  *
@@ -42,8 +45,23 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
     private String url;
     private String user;
     private String pwd;
+     private DataSource ds;
 
-    
+    public DataSource getDs() {
+        return ds;
+    }
+
+    public void setDs(DataSource ds) {
+        this.ds = ds;
+    }
+     
+
+     @Override
+    public void initDao(DataSource ds) throws DataAccessException {
+        this.ds = ds;
+//        setInitDao();
+        
+    } 
  
 
     public String getDriver() {
@@ -94,7 +112,15 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
         System.out.println(url);
         System.out.println(user);
         System.out.println(pwd);
-        db.openConnection(driver, url, user, pwd);
+          if(ds == null) {
+            db.openConnection(driver, url, user, pwd);
+        } else {
+            try {
+                db.openConnection(ds);
+            } catch (Exception ex) {
+                Logger.getLogger(AuthorDao.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
 
         int result = db.deleteById("author", "author_id", id);
 
@@ -104,7 +130,11 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
     }
 
     public int updateAuthorById(String authorName, Integer authorId) throws ClassNotFoundException, SQLException, Exception {
-        db.openConnection(driver, url, user, pwd);
+          if(ds == null) {
+            db.openConnection(driver, url, user, pwd);
+        } else {
+            db.openConnection(ds);
+        }
 //        db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
 
         int recordsUpdated = db.updateRecordById("author", Arrays.asList("author_name"),
@@ -118,7 +148,15 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
 //    db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
     @Override
     public List<Author> getAuthorList() throws ClassNotFoundException, SQLException {
-        db.openConnection(driver, url, user, pwd);
+          if(ds == null) {
+            db.openConnection(driver, url, user, pwd);
+        } else {
+              try {
+                  db.openConnection(ds);
+              } catch (Exception ex) {
+                  Logger.getLogger(AuthorDao.class.getName()).log(Level.SEVERE, null, ex);
+              }
+        }
         
 //         db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
 
@@ -143,7 +181,15 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
     }
 
     public Author getAuthorById(Integer idValue) throws ClassNotFoundException, SQLException {
-         db.openConnection(driver, url, user, pwd);
+           if(ds == null) {
+            db.openConnection(driver, url, user, pwd);
+        } else {
+               try {
+                   db.openConnection(ds);
+               } catch (Exception ex) {
+                   Logger.getLogger(AuthorDao.class.getName()).log(Level.SEVERE, null, ex);
+               }
+        }
          
 //         db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
          
@@ -167,7 +213,15 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
     }
     
         public Map<String, Object> getAuthorId(Integer idValue) throws ClassNotFoundException, SQLException {
-         db.openConnection(driver, url, user, pwd);
+           if(ds == null) {
+            db.openConnection(driver, url, user, pwd);
+        } else {
+               try {
+                   db.openConnection(ds);
+               } catch (Exception ex) {
+                   Logger.getLogger(AuthorDao.class.getName()).log(Level.SEVERE, null, ex);
+               }
+        }
 //         db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
 
         Map<String, Object> rawData = db.findRecordById("author", "author_id", idValue);
@@ -193,7 +247,15 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
 
     public int deleteAuthorRecord(String primaryKey, int value) throws SQLException, ClassNotFoundException {
         int result;
-        db.openConnection(driver, url, user, pwd);
+          if(ds == null) {
+            db.openConnection(driver, url, user, pwd);
+        } else {
+            try {
+                db.openConnection(ds);
+            } catch (Exception ex) {
+                Logger.getLogger(AuthorDao.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         result = db.deleteRecord("author", primaryKey, value);
         db.closeConnection();
         return result;
@@ -201,7 +263,11 @@ public class AuthorDao implements AuthorDaoStrategy, Serializable {
 
     public int insertAuthorRecord(String authorName) throws SQLException, Exception {
         int result;
-        db.openConnection(driver, url, user, pwd);
+          if(ds == null) {
+            db.openConnection(driver, url, user, pwd);
+        } else {
+            db.openConnection(ds);
+        }
 
         result = db.insertRecord("author", Arrays.asList("author_name", "date_added"),
                 Arrays.asList(authorName, new Date()));

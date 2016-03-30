@@ -10,7 +10,12 @@ import edu.wctc.mrc.bookwebapp.model.MockAuthorDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.inject.Inject;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -19,6 +24,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
 
 /**
  *
@@ -34,6 +40,7 @@ public class AuthorController extends HttpServlet {
     private String password;
 
     private String modeValue;
+    private String dbJndiName;
 
     @Inject
     private AuthorService authService;
@@ -45,7 +52,7 @@ public class AuthorController extends HttpServlet {
     private static final String EXECUTE_DELETE = "delete";
     private static final String EXECUTE_SWITCH_MODE = "switch mode";
     private static final String EXECUTE_SET_READ_MODE = "set read mode";
-    private static final String UPDATE_PAGE = "updateDetails.jsp";
+    private static final String UPDATE_PAGE = "/updateDetails.jsp";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -58,10 +65,11 @@ public class AuthorController extends HttpServlet {
      */
     @Override
     public void init() throws ServletException {
-        driverClass = getServletContext().getInitParameter("db.driver.class");
-        url = getServletContext().getInitParameter("db.url");
-        userName = getServletContext().getInitParameter("db.username");
-        password = getServletContext().getInitParameter("db.password");
+//        driverClass = getServletContext().getInitParameter("db.driver.class");
+//        url = getServletContext().getInitParameter("db.url");
+//        userName = getServletContext().getInitParameter("db.username");
+//        password = getServletContext().getInitParameter("db.password");
+dbJndiName = getServletContext().getInitParameter("db.jndi.name");
 
     }
 
@@ -148,7 +156,7 @@ public class AuthorController extends HttpServlet {
     }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
 
         HttpSession session = request.getSession();
@@ -156,7 +164,7 @@ public class AuthorController extends HttpServlet {
 
         String fontColor = request.getParameter("fontColor");
 
-        configDbConnection();
+//        configDbConnection();
 
         String destinationPage = RESULT_PAGE;
 
@@ -165,6 +173,8 @@ public class AuthorController extends HttpServlet {
             /* TODO output your page here. You may use following sample code. */
 //         MockAuthorDao ns = new MockAuthorDao();
 //         AuthorService ns = new AuthorService();
+
+configDbConnection();
 
             if (request.getParameter("initial_settings") != null) {
                 setInitialAttributes(session, request, ctx);
@@ -214,8 +224,18 @@ public class AuthorController extends HttpServlet {
 
     }
 
-    private void configDbConnection() {
-        authService.getDao().initDao(driverClass, url, userName, password);
+    private void configDbConnection() throws NamingException, Exception {
+        if(dbJndiName == null) {
+            authService.getDao().initDao(driverClass, url, userName, password);   
+        } else {
+            /*
+             Lookup the JNDI name of the Glassfish connection pool
+             and then use it to create a DataSource object.
+             */
+            Context ctx = new InitialContext();
+            DataSource ds = (DataSource) ctx.lookup(dbJndiName);
+            authService.getDao().initDao(ds);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -230,7 +250,11 @@ public class AuthorController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(AuthorController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -244,7 +268,11 @@ public class AuthorController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(AuthorController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
