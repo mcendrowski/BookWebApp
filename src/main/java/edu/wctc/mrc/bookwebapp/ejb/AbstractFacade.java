@@ -5,6 +5,7 @@
  */
 package edu.wctc.mrc.bookwebapp.ejb;
 
+
 import java.util.List;
 import javax.persistence.EntityManager;
 
@@ -25,6 +26,13 @@ public abstract class AbstractFacade<T> {
     public void create(T entity) {
         getEntityManager().persist(entity);
     }
+    
+  
+    
+//    public Author findAuthorById(String id){
+//        Author author = new Author();
+//        this.find(id)
+//    }
 
     public void edit(T entity) {
         getEntityManager().merge(entity);

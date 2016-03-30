@@ -5,8 +5,8 @@
  */
 package edu.wctc.mrc.bookwebapp.controller;
 
-import edu.wctc.mrc.bookwebapp.model.AuthorService;
-import edu.wctc.mrc.bookwebapp.model.MockAuthorDao;
+import edu.wctc.mrc.bookwebapp.ejb.AuthorFacade;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -34,16 +34,19 @@ import javax.sql.DataSource;
 public class AuthorController extends HttpServlet {
 
     // db config
-    private String driverClass;
-    private String url;
-    private String userName;
-    private String password;
+//    private String driverClass;
+//    private String url;
+//    private String userName;
+//    private String password;
+//
+//    private String modeValue;
+//    private String dbJndiName;
 
-    private String modeValue;
-    private String dbJndiName;
-
-    @Inject
-    private AuthorService authService;
+//    @Inject
+//    private AuthorService authService;
+    
+     @Inject
+    private AuthorFacade authService;
 
     private static final String RESULT_PAGE = "/viewAllAuthors.jsp";
     private static final String ACTION_PARAM = "action";
@@ -63,15 +66,15 @@ public class AuthorController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
-    public void init() throws ServletException {
-//        driverClass = getServletContext().getInitParameter("db.driver.class");
-//        url = getServletContext().getInitParameter("db.url");
-//        userName = getServletContext().getInitParameter("db.username");
-//        password = getServletContext().getInitParameter("db.password");
-dbJndiName = getServletContext().getInitParameter("db.jndi.name");
-
-    }
+//    @Override
+//    public void init() throws ServletException {
+////        driverClass = getServletContext().getInitParameter("db.driver.class");
+////        url = getServletContext().getInitParameter("db.url");
+////        userName = getServletContext().getInitParameter("db.username");
+////        password = getServletContext().getInitParameter("db.password");
+//dbJndiName = getServletContext().getInitParameter("db.jndi.name");
+//
+//    }
 
 //    private void setColorAttribute(HttpServletRequest request) {
 //
@@ -89,38 +92,60 @@ dbJndiName = getServletContext().getInitParameter("db.jndi.name");
     private void setUpdateAttributes(HttpServletRequest request) throws ClassNotFoundException, SQLException {
 
         Integer authorId = Integer.parseInt(request.getParameter("update_author_id"));
+//        String authorId = request.getParameter("update_author_id");
+        
         request.setAttribute("author_id", authorId);
-        request.setAttribute("updated_record", authService.getAuthorById(authorId));
+        
+//        request.setAttribute("updated_record", authService.getAuthorById(authorId));        
+        request.setAttribute("updated_record", authService.find(authorId));
     }
 
     private void setInsertAttributes(HttpServletRequest request) throws Exception {
 
         String insertValue = request.getParameter("insert_value");
         authService.addNewAuthor(insertValue);
-        request.setAttribute("authorList", authService.getAuthorList());
+        
+//        request.setAttribute("authorList", authService.getAuthorList());
+        request.setAttribute("authorList", authService.findAll());
+        
+        
     }
 
     private void setDeleteAttributes(HttpServletRequest request) throws Exception {
+        
         int authorId = Integer.parseInt(request.getParameter("delete_author_id"));
+//        String authorId = request.getParameter("delete_author_id");
+        
+//        authService.deleteAuthorById(authorId);
         authService.deleteAuthorById(authorId);
-        request.setAttribute("authorList", authService.getAuthorList());
+        
+        
+//        request.setAttribute("authorList", authService.getAuthorList());
+        request.setAttribute("authorList", authService.findAll());
 
     }
 
     private void setConfirmUpdateAttributes(HttpServletRequest request) throws SQLException, Exception {
 
         String newName = request.getParameter("new_name");
-        Integer id = Integer.parseInt(request.getParameter("updated_author_id"));
-        authService.modifyAuthorById(newName, id);
+//        Integer id = Integer.parseInt(request.getParameter("updated_author_id"));
+        String id = request.getParameter("updated_author_id");
+        
+//        authService.modifyAuthorById(newName, id);
+          authService.updateAuthor(id,newName);
 
-        request.setAttribute("authorList", authService.getAuthorList());
+        request.setAttribute("authorList", authService.findAll());
 
     }
 
     private void setInitialAttributes(HttpSession session, HttpServletRequest request, ServletContext ctx) throws ClassNotFoundException, SQLException {
         session.setAttribute("mode", "READ");
         session.setAttribute("color", "black");
-        request.setAttribute("authorList", authService.getAuthorList());
+        
+//        request.setAttribute("authorList", authService.getAuthorList());
+        request.setAttribute("authorList", authService.findAll());
+        
+        
         ctx.setAttribute("show_hide_user_button", "SHOW USER");
     }
 
@@ -137,7 +162,8 @@ dbJndiName = getServletContext().getInitParameter("db.jndi.name");
             session.setAttribute("color", "black");
         }
 
-        request.setAttribute("authorList", authService.getAuthorList());
+//        request.setAttribute("authorList", authService.getAuthorList());
+        request.setAttribute("authorList", authService.findAll());
 
     }
 
@@ -151,7 +177,8 @@ dbJndiName = getServletContext().getInitParameter("db.jndi.name");
             ctx.setAttribute("user", "");
         }
 
-        request.setAttribute("authorList", authService.getAuthorList());
+//        request.setAttribute("authorList", authService.getAuthorList());
+        request.setAttribute("authorList", authService.findAll());
 
     }
 
@@ -174,7 +201,7 @@ dbJndiName = getServletContext().getInitParameter("db.jndi.name");
 //         MockAuthorDao ns = new MockAuthorDao();
 //         AuthorService ns = new AuthorService();
 
-configDbConnection();
+//configDbConnection();
 
             if (request.getParameter("initial_settings") != null) {
                 setInitialAttributes(session, request, ctx);
@@ -224,19 +251,19 @@ configDbConnection();
 
     }
 
-    private void configDbConnection() throws NamingException, Exception {
-        if(dbJndiName == null) {
-            authService.getDao().initDao(driverClass, url, userName, password);   
-        } else {
-            /*
-             Lookup the JNDI name of the Glassfish connection pool
-             and then use it to create a DataSource object.
-             */
-            Context ctx = new InitialContext();
-            DataSource ds = (DataSource) ctx.lookup(dbJndiName);
-            authService.getDao().initDao(ds);
-        }
-    }
+//    private void configDbConnection() throws NamingException, Exception {
+//        if(dbJndiName == null) {
+//            authService.getDao().initDao(driverClass, url, userName, password);   
+//        } else {
+//            /*
+//             Lookup the JNDI name of the Glassfish connection pool
+//             and then use it to create a DataSource object.
+//             */
+//            Context ctx = new InitialContext();
+//            DataSource ds = (DataSource) ctx.lookup(dbJndiName);
+//            authService.getDao().initDao(ds);
+//        }
+//    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
