@@ -12,10 +12,7 @@
     want. If not, see below. -->
    
     
-    <context-param>
-        <param-name>db.jndi.name</param-name>
-        <param-value>jdbc/book</param-value>
-    </context-param>
+
     
     
     <session-config>
