@@ -113,8 +113,8 @@ public class AuthorController extends HttpServlet {
 
     private void setDeleteAttributes(HttpServletRequest request) throws Exception {
         
-        int authorId = Integer.parseInt(request.getParameter("delete_author_id"));
-//        String authorId = request.getParameter("delete_author_id");
+//        int authorId = Integer.parseInt(request.getParameter("delete_author_id"));
+        String authorId = request.getParameter("delete_author_id");
         
 //        authService.deleteAuthorById(authorId);
         authService.deleteAuthorById(authorId);
@@ -128,8 +128,8 @@ public class AuthorController extends HttpServlet {
     private void setConfirmUpdateAttributes(HttpServletRequest request) throws SQLException, Exception {
 
         String newName = request.getParameter("new_name");
-//        Integer id = Integer.parseInt(request.getParameter("updated_author_id"));
-        String id = request.getParameter("updated_author_id");
+        Integer id = Integer.parseInt(request.getParameter("updated_author_id"));
+//        String id = request.getParameter("updated_author_id");
         
 //        authService.modifyAuthorById(newName, id);
           authService.updateAuthor(id,newName);

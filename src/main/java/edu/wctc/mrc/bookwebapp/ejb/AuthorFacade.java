@@ -30,12 +30,13 @@ public class AuthorFacade extends AbstractFacade<Author> {
         super(Author.class);
     }
     
-      public void updateAuthor(String id,String name){
+      public void updateAuthor(Integer id,String name){
         Author author = new Author();
-        author.setAuthorId(Integer.parseInt(id));
+//        author.setAuthorId(Integer.parseInt(id)); 
+        author.setAuthorId(id);
         author.setAuthorName(name);
-        this.create(author);
-//        this.getEntityManager().merge(author); 
+//        this.create(author);
+        this.getEntityManager().merge(author); 
         
     }
     
@@ -43,13 +44,16 @@ public class AuthorFacade extends AbstractFacade<Author> {
          Author author = new Author();
          author.setAuthorName(name);
          author.setDateAdded(new Date());
-         this.getEntityManager().merge(author);
+//         this.getEntityManager().merge(author);
+         this.create(author);
+         
          
          
     }
     
     public void deleteAuthorById(Object id){
-        Author author = this.find(id);
+//         Author author = this.find(id);
+        Author author = this.find(Integer.parseInt(id.toString()));
         remove(author);
         
     }
