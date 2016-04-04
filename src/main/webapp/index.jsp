@@ -34,6 +34,19 @@
             </div>
         </form>
             
+          <form id="startingBookForm" name="startingBookForm" method="POST" action="<%= response.encodeURL("BookController")%>" >
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 col-md-offset-4">
+                        <input type="submit" class="btn btn-info btn-large" name="submit" value="Open View All Books page"/>
+                        <input type="hidden" name="initial_settings" value="initial_settings"> 
+                        
+                    </div>
+                </div>
+            </div>
+        </form>   
+            
+            
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     </body>
 </html>

@@ -7,6 +7,8 @@ package edu.wctc.mrc.bookwebapp.ejb;
 
 import edu.wctc.mrc.bookwebapp.model.Author;
 import java.util.Date;
+import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -17,6 +19,9 @@ import javax.persistence.PersistenceContext;
  */
 @Stateless
 public class AuthorFacade extends AbstractFacade<Author> {
+
+    @EJB
+    private AuthorFacade authorFacade;
 
     @PersistenceContext(unitName = "edu.wctc.mrc_BookWebApp_war_1.0-SNAPSHOTPU")
     private EntityManager em;
@@ -56,6 +61,15 @@ public class AuthorFacade extends AbstractFacade<Author> {
         Author author = this.find(Integer.parseInt(id.toString()));
         remove(author);
         
+    }
+    
+    
+    
+    public static void main(String[] args) {
+        List<Author> authorList;
+        AuthorFacade af = new AuthorFacade();
+        authorList=af.findAll();    
+            System.out.println(authorList);
     }
 
     
