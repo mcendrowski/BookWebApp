@@ -50,7 +50,14 @@
                         <input type="submit" name="submit" value="${show_hide_user_button}">
                         <input type="hidden" name="show_hide_user" value="show_hide_user">
                         
-                    </form>  
+                    </form> 
+                        
+                      <br> 
+                      <form method="POST" action="<%= response.encodeURL("BookController")%>">        
+                        <input type="submit" name="submit" value="back to start">
+                        <input type="hidden" name="back_to_start" value="back_to_start">
+                        
+                    </form> 
                
                         
                 </div>

@@ -33,7 +33,7 @@
                 </div>
             </div>
         </form>
-            
+            <br> 
           <form id="startingBookForm" name="startingBookForm" method="POST" action="<%= response.encodeURL("BookController")%>" >
             <div class="container">
                 <div class="row">

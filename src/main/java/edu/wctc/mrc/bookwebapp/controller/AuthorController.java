@@ -61,6 +61,7 @@ public class AuthorController extends HttpServlet {
     private static final String UPDATED_RECORD_PARAM = "updated_record";
     private static final String UPDATED_AUTHOR_ID = "updated_author_id";
     private static final String AUTHOR_LIST = "authorList";
+     private static final String START_PAGE = "/index.jsp";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -242,7 +243,13 @@ public class AuthorController extends HttpServlet {
 
 //configDbConnection();
 
-            if (request.getParameter("initial_settings") != null) {
+            
+              if (request.getParameter("back_to_start") != null) {
+//                setInitialAttributes(session, request, ctx);
+                destinationPage = START_PAGE;
+            }
+
+              if (request.getParameter("initial_settings") != null) {
                 setInitialAttributes(session, request, ctx);
                 destinationPage = RESULT_PAGE;
             }

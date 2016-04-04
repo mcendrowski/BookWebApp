@@ -51,6 +51,13 @@
                         <input type="hidden" name="show_hide_user" value="show_hide_user">
                         
                     </form>  
+                    
+                         <br> 
+                      <form method="POST" action="<%= response.encodeURL("BookController")%>">        
+                        <input type="submit" name="submit" value="back to start">
+                        <input type="hidden" name="back_to_start" value="back_to_start">
+                        
+                    </form>  
                
                         
                 </div>
@@ -108,8 +115,8 @@
                         <form method="POST" action="<%= response.encodeURL("BookController")%>"> 
                             <tr>
 
-                                <td class="col-md-1 text-center"></td>    
-                                <td class="col-md-4 text-center"><input type="text" name="insert_value" value=""></td>
+                                <td class="col-md-1 text-center"></td>  
+                                <td class="col-md-4 text-center"></td>                                
                                 <td class="col-md-3 text-center"></td>
                                 <td class="col-md-2 text-center">
 

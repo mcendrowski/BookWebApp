@@ -44,6 +44,8 @@ public class BookController extends HttpServlet {
     private static final String EXECUTE_SWITCH_MODE = "switch mode";
     private static final String EXECUTE_SET_READ_MODE = "set read mode";
     private static final String UPDATE_PAGE = "/updateBookDetails.jsp";
+    private static final String INSERT_PAGE = "/insertBookDetails.jsp";
+    private static final String START_PAGE = "/index.jsp";
 
 
     /**
@@ -67,17 +69,46 @@ public class BookController extends HttpServlet {
         
         request.setAttribute("authorList", authService.findAll());
     }
-// TEMPORARILY HIDDEN!!!!!!!!!!!!!!!!!!
-//    private void setInsertAttributes(HttpServletRequest request) throws Exception {
-//
+    
+        private void setInsertAttributes(HttpServletRequest request) throws ClassNotFoundException, SQLException {
+
+//        Integer bookId = Integer.parseInt(request.getParameter("update_book_id"));
+//        String authorId = request.getParameter("update_author_id");
+        
+//        request.setAttribute("book_id", bookId);
+        
+//        request.setAttribute("updated_record", authService.getAuthorById(authorId));        
+//        request.setAttribute("updated_record", bookService.find(bookId));       
+        
+        request.setAttribute("authorList", authService.findAll());
+    }
+        
+
+    private void setConfirmInsertAttributes(HttpServletRequest request) throws Exception {
+
 //        String insertValue = request.getParameter("insert_value");
 //        bookService.addNewBook(insertValue);
 //        
 ////        request.setAttribute("authorList", authService.getAuthorList());
 //        request.setAttribute("bookList", bookService.findAll());
-//        
-//        
-//    }
+        
+        
+        
+//               Integer id = Integer.parseInt(request.getParameter("updated_book_id"));
+        String newTitle = request.getParameter("new_insert_title");
+        String newIsbn = request.getParameter("new_insert_isbn");
+        Integer newAuthorId = Integer.parseInt(request.getParameter("new_insert_author_id"));
+        Author newAuthor = new Author(newAuthorId);
+//        String id = request.getParameter("updated_author_id");
+        
+//        authService.modifyAuthorById(newName, id);
+          bookService.addNewBook(newTitle,newIsbn,newAuthor);
+
+        request.setAttribute("bookList", bookService.findAll());
+          
+        
+        
+    }
 
     private void setDeleteAttributes(HttpServletRequest request) throws Exception {
         
@@ -113,6 +144,17 @@ public class BookController extends HttpServlet {
     }
 
     private void setInitialAttributes(HttpSession session, HttpServletRequest request, ServletContext ctx) throws ClassNotFoundException, SQLException {
+        session.setAttribute("mode", "READ");
+        session.setAttribute("color", "black");
+        
+//        request.setAttribute("authorList", authService.getAuthorList());
+        request.setAttribute("bookList", bookService.findAll());
+        
+        
+        ctx.setAttribute("show_hide_user_button", "SHOW USER");
+    }
+    
+     private void backToStartAttributes(HttpSession session, HttpServletRequest request, ServletContext ctx) throws ClassNotFoundException, SQLException {
         session.setAttribute("mode", "READ");
         session.setAttribute("color", "black");
         
@@ -177,6 +219,12 @@ public class BookController extends HttpServlet {
 
 //configDbConnection();
 
+            
+
+             if (request.getParameter("back_to_start") != null) {
+//                setInitialAttributes(session, request, ctx);
+                destinationPage = START_PAGE;
+            }
             if (request.getParameter("initial_settings") != null) {
                 setInitialAttributes(session, request, ctx);
                 destinationPage = RESULT_PAGE;
@@ -200,14 +248,19 @@ public class BookController extends HttpServlet {
             if (request.getParameter("update") != null) {
                 setUpdateAttributes(request);
                 destinationPage = UPDATE_PAGE;
-// TEMPORARILY HIDDEN!!!!!!!!!!!!!!!!!!
-//            } else if (request.getParameter("insert") != null) {
-//                setInsertAttributes(request);
-//                destinationPage = RESULT_PAGE;
+            }
+
+            if (request.getParameter("insert") != null) {
+                setInsertAttributes(request);
+                destinationPage = INSERT_PAGE;
+
+            } else if (request.getParameter("confirm_insert") != null) {
+                setConfirmInsertAttributes(request);
+                destinationPage = RESULT_PAGE;
             } else if (request.getParameter("delete") != null) {
                 setDeleteAttributes(request);
                 destinationPage = RESULT_PAGE;
-// TEMPORARILY HIDDEN!!!!!!!!!!!!!!!!!!
+
             } else if (request.getParameter("confirm_update") != null) {
                 setConfirmUpdateAttributes(request);
                 destinationPage = RESULT_PAGE;
