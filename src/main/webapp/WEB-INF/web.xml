@@ -10,10 +10,51 @@
     remember, all of these params are global to your app and can be
     accessed from any JSP page or servlet, which may not be what you
     want. If not, see below. -->
+    
+     <!-- Begin Spring-specific configuration -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:applicationContext.xml</param-value>
+    </context-param>
+        
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+    </listener>
+    <!-- END Spring configuration -->
    
-    
-
-    
+  <!-- YOU DON'T NEED BOTH, SO CHOOSE EITHER THE ABOVE STYLE OR BELOW STYLE -->
+    <!--
+        This is an example of an servlet-specific init param. It's called a 
+        ServletConfig init param. You must configure these as part of your
+        overall servlet configuration, so there's separate init params for 
+        each servlet if desired. And those params can only be used by the 
+        servlet you've configured them for. You can't use annotations on servlets 
+        where you need these init params. So configure them here.
+    -->
+    <servlet>
+        <!-- first alias, private to config -->
+        <servlet-name>AuthorController</servlet-name>
+        <servlet-class>edu.wctc.mrc.bookwebapp.controller.AuthorController</servlet-class>
+        <!-- must be last item in servlet config -->
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>BookController</servlet-name>
+        <servlet-class>edu.wctc.mrc.bookwebapp.controller.BookController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <!-- reference private config alias -->
+        <servlet-name>AuthorController</servlet-name>
+        <!-- second alias is the one you use in your links -->
+        <url-pattern>/AuthorController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BookController</servlet-name>
+        <url-pattern>/BookController</url-pattern>
+    </servlet-mapping>    
     
     <session-config>
         <session-timeout>

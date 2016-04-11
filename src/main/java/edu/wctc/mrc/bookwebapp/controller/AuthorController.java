@@ -5,8 +5,10 @@
  */
 package edu.wctc.mrc.bookwebapp.controller;
 
-import edu.wctc.mrc.bookwebapp.ejb.AuthorFacade;
+//import edu.wctc.mrc.bookwebapp.ejb.AuthorFacade;
 
+import edu.wctc.mrc.bookwebapp.entity.Author;
+import edu.wctc.mrc.bookwebapp.service.AuthorService;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -25,6 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  *
@@ -45,8 +49,11 @@ public class AuthorController extends HttpServlet {
 //    @Inject
 //    private AuthorService authService;
     
-     @Inject
-    private AuthorFacade authService;
+//     @Inject
+//    private AuthorFacade authService;
+     
+      // DO THIS INSTEAD (see init() method):
+    private AuthorService authService;
 
     private static final String RESULT_PAGE = "/viewAllAuthors.jsp";
     private static final String ACTION_PARAM = "action";
@@ -105,19 +112,34 @@ public class AuthorController extends HttpServlet {
 ////        request.setAttribute("updated_record", authService.getAuthorById(authorId));        
 //        request.setAttribute("updated_record", authService.find(authorId));
 //    }
+     
+     
+         @Override
+    public void init() throws ServletException {
+        // Ask Spring for object to inject
+        ServletContext sctx = getServletContext();
+        WebApplicationContext ctx
+                = WebApplicationContextUtils.getWebApplicationContext(sctx);
+        authService = (AuthorService) ctx.getBean("authorService");
+
+    }
     
     
            private void setUpdateAttributes(HttpServletRequest request) throws ClassNotFoundException, SQLException {
 
-        Integer authorId = Integer.parseInt(request.getParameter(UPDATE_AUTHOR_ID_PARAM));
+//        Integer authorId = Integer.parseInt(request.getParameter(UPDATE_AUTHOR_ID_PARAM));
+        String authorId = request.getParameter(UPDATE_AUTHOR_ID_PARAM);
+        Author author = authService.findById(authorId);
         request.setAttribute(AUTHOR_ID_PARAM, authorId);
-        request.setAttribute(UPDATED_RECORD_PARAM, authService.find(authorId));
+        request.setAttribute(UPDATED_RECORD_PARAM, author);
     }
 
     private void setInsertAttributes(HttpServletRequest request) throws Exception {
 
         String insertValue = request.getParameter("insert_value");
-        authService.addNewAuthor(insertValue);
+        Author author = new Author();
+        author.setAuthorName(insertValue);
+        authService.addNewAuthor(author);
         
 //        request.setAttribute("authorList", authService.getAuthorList());
         request.setAttribute("authorList", authService.findAll());
@@ -133,8 +155,13 @@ public class AuthorController extends HttpServlet {
 //        int authorId = Integer.parseInt(request.getParameter("delete_author_id"));
         String authorId = request.getParameter("delete_author_id");
         
+          Author author = authService.findById(authorId);
+          
+        
+        
 //        authService.deleteAuthorById(authorId);
-        authService.deleteAuthorById(authorId);
+        authService.deleteAuthorById(author);
+        
         
         
 //        request.setAttribute("authorList", authService.getAuthorList());
@@ -157,7 +184,9 @@ public class AuthorController extends HttpServlet {
     
         private void setConfirmUpdateAttributes(HttpServletRequest request) throws SQLException, Exception {
 
-        Integer id = Integer.parseInt(request.getParameter(UPDATED_AUTHOR_ID));
+//        Integer id = Integer.parseInt(request.getParameter(UPDATED_AUTHOR_ID));
+//        Integer id = Integer.parseInt(request.getParameter(UPDATED_AUTHOR_ID));
+String id = request.getParameter(UPDATED_AUTHOR_ID);
         String newName= request.getParameter("new_name");
 //        String dateAdded = request.getParameter("new_date_added");
 
@@ -170,8 +199,13 @@ public class AuthorController extends HttpServlet {
 //        }
 
 //        String newUrl = request.getParameter("new_url");
-
-        authService.updateAuthor(id,newName);
+        
+        Author author = authService.findById(id);
+        author.setAuthorName(newName);
+        
+        
+        authService.updateAuthor(author);
+        
 //        authService.modifyProduceById(id, authorName, dateAdded);
 
         request.setAttribute(AUTHOR_LIST, authService.findAll());
