@@ -18,4 +18,13 @@ public interface AuthorRepository extends JpaRepository<Author, Integer>, Serial
 //    
     @Query("SELECT a.authorName FROM Author a")
     public Object[] findAllWithNameOnly();
+    
+    @Query("SELECT a.authorId FROM Author a")
+    public Object[] findAuthorAndCountBooks();
+    
+    @Query("SELECT a FROM Author a JOIN FETCH a.bookSet WHERE a.authorName = (:author_name)")
+     public Author findByIdAndFetchBooksEagerly(@Param("author_name") String author_name);
+    
+    
 }
+

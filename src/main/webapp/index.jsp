@@ -44,7 +44,20 @@
                     </div>
                 </div>
             </div>
-        </form>   
+        </form>  
+            
+         <br> 
+          <form id="authorIds" name="authorIds" method="POST" action="<%= response.encodeURL("AuthorController")%>" >
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 col-md-offset-4">
+                        <input type="submit" class="btn btn-info btn-large" name="submit" value="Open View Author IDs"/>
+                        <input type="hidden" name="initial_settings" value="initial_settings"> 
+                        
+                    </div>
+                </div>
+            </div>
+        </form> 
             
             
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>

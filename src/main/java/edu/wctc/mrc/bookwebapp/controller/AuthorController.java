@@ -8,10 +8,14 @@ package edu.wctc.mrc.bookwebapp.controller;
 //import edu.wctc.mrc.bookwebapp.ejb.AuthorFacade;
 
 import edu.wctc.mrc.bookwebapp.entity.Author;
+import edu.wctc.mrc.bookwebapp.entity.Book;
 import edu.wctc.mrc.bookwebapp.service.AuthorService;
+import edu.wctc.mrc.bookwebapp.service.BookService;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
@@ -54,6 +58,7 @@ public class AuthorController extends HttpServlet {
      
       // DO THIS INSTEAD (see init() method):
     private AuthorService authService;
+    private BookService bookService;
 
     private static final String RESULT_PAGE = "/viewAllAuthors.jsp";
     private static final String ACTION_PARAM = "action";
@@ -121,6 +126,7 @@ public class AuthorController extends HttpServlet {
         WebApplicationContext ctx
                 = WebApplicationContextUtils.getWebApplicationContext(sctx);
         authService = (AuthorService) ctx.getBean("authorService");
+        bookService = (BookService) ctx.getBean("bookService");
 
     }
     
@@ -153,14 +159,74 @@ public class AuthorController extends HttpServlet {
     private void setDeleteAttributes(HttpServletRequest request) throws Exception {
         
 //        int authorId = Integer.parseInt(request.getParameter("delete_author_id"));
-        String authorId = request.getParameter("delete_author_id");
         
-          Author author = authService.findById(authorId);
+
+    //////////////////////////////////
+//String authorId = request.getParameter("delete_author_id");
+        
+//          Author author = authService.findById(authorId);
+//          
+//          Set<Book> listOfAuthorBooks = author.getBookSet();
+//          
+//           
+//          
+//          if (listOfAuthorBooks.size()>0){
+//          for(Book book: listOfAuthorBooks){
+//              bookService.deleteBookById(book);
+//          }
+//          }
+//          
+//          authService.deleteAuthorById(author);
+//          
+//          request.setAttribute("authorList", authService.findAll());
+          
+          ////////////////////////////////////////
+          /// Jim's version              /////////
+          ////////////////////////////////////////
+          
+        String authorId = request.getParameter("delete_author_id");
+          
+         Author author = authService.findByIdAndFetchBooksEagerly(authorId);
+          
+                            
+                            //// BIG CHANGE DUE TO SPRING JPA DUE TO LAZY LOADING OF BOOKS //////
+                            if(author == null) {
+                                author = authService.findById(authorId);
+                                author.setBookSet(new LinkedHashSet<>());
+                            }
+                            ////////////////////////////////////////
+                            
+                            authService.remove(author);
+                            
+                            
+                            
+                            
+//          ////////////////////////////////////////////////////////////////////////
+//           String[] authorIds = request.getParameterValues("authorId");
+//                        for (String id : authorIds) {
+//                            
+//                            //// BIG CHANGE DUE TO SPRING JPA DUE TO LAZY LOADING OF BOOKS //////
+//                            author = authService.findByIdAndFetchBooksEagerly(id);
+//                            if(author == null) {
+//                                author = authService.findById(id);
+//                                author.setBookSet(new LinkedHashSet<>());
+//                            }
+//                            ////////////////////////////////////////
+//                            
+//                            authService.remove(author);
+//                        }
+//          
+//          
+//          
+//          ////////////////////////////////////////////////////////////////////////
+                        
+          
+          
           
         
         
 //        authService.deleteAuthorById(authorId);
-        authService.deleteAuthorById(author);
+//        authService.deleteAuthorById(author);
         
         
         
